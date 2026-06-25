@@ -49,6 +49,18 @@
   --radius-buttons: 8px;
   --radius-largecta: 32px;
   --radius-navpills: 40px;
+
+  /* Animations */
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 body {
@@ -115,4 +127,15 @@ body {
   font-size: 80px;
   line-height: 1;
   letter-spacing: -3.2px;
+}
+
+/* Prevent default browser borders or outlines on images and SVGs during loading/renders */
+img, svg {
+  border: 0 !important;
+  outline: none !important;
+}
+
+/* Hide broken/loading image outlines in Chrome/Safari */
+img:not([src]) {
+  visibility: hidden;
 }

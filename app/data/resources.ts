@@ -2,99 +2,68 @@ import { Resource } from '../context/CartContext'
 
 export const RESOURCES: Resource[] = [
   {
-    id: 'pr-telegraf',
-    title: 'Telegraf Grotesk Complete Specimen',
+    id: 'molen-dream',
+    title: 'Molen Dream Font',
     type: 'Font',
-    price: 29.00,
-    description: 'The workhorse geometric grotesk font family specimen featuring weights 100-700, custom alternates, and tight negative display tracking registers.',
-    rating: 4.9,
-    downloads: '2.4K',
-    fileSize: '4.8 MB',
-    gradient: 'from-royal-violet to-electric-iris',
-    author: 'Studio Command'
-  },
-  {
-    id: 'pr-wireframe',
-    title: 'Minimalist Wireframe Kit v2',
-    type: 'UI Kit',
     price: 0, // Free
-    description: 'Achromatic layout block wireframes with pre-configured auto-layouts, clean grid alignment tokens, and nested button component libraries.',
-    rating: 4.7,
-    downloads: '8.1K',
-    fileSize: '12.4 MB',
-    gradient: 'from-slate to-ash',
-    author: 'punkrecords labs'
-  },
-  {
-    id: 'pr-neobrutalist',
-    title: 'Neo-Brutalist Vector Icons',
-    type: 'Icons',
-    price: 12.00,
-    description: 'A set of 250+ custom geometric vector icons built with consistent 2px-stroke node lines. Fully editable SVG exports for app interfaces.',
+    description: 'An elegant and expressive display serif typeface. Molen Dream features high contrast strokes and graceful terminal curves, crafted for editorial headlines and high-end layouts.',
     rating: 4.8,
-    downloads: '1.2K',
-    fileSize: '1.6 MB',
-    gradient: 'from-emerald via-electric-iris to-royal-violet',
-    author: 'Vector System'
-  },
-  {
-    id: 'pr-clay-shapes',
-    title: '3D Matte Clay Geometric Shapes',
-    type: '3D Asset',
-    price: 19.00,
-    description: 'High-fidelity abstract clay shapes rendered with matte gradient colors. Perfect for landing page accents and dashboard mockup decorations.',
-    rating: 4.6,
-    downloads: '940',
-    fileSize: '84.0 MB',
-    gradient: 'from-orchid via-blush to-lilac-mist',
-    author: 'FormLab'
-  },
-  {
-    id: 'pr-logistics',
-    title: 'Orderful Logistics UI Kit',
-    type: 'UI Kit',
-    price: 0, // Free
-    description: 'B2B command deck layout templates representing logistics and transport interfaces. Includes dark selector panels and connection network grids.',
-    rating: 4.9,
-    downloads: '3.3K',
-    fileSize: '18.2 MB',
-    gradient: 'from-obsidian to-slate',
-    author: 'Dispatcher Studio'
-  },
-  {
-    id: 'pr-moderngothic',
-    title: 'ModernGothic Specimen Pro',
-    type: 'Font',
-    price: 15.00,
-    description: 'A secondary display typeface specimen emphasizing geometric styling alternates for modern typographic headers. OTF, TTF, and WOFF2.',
-    rating: 4.5,
     downloads: '1.8K',
-    fileSize: '3.1 MB',
-    gradient: 'from-ember to-lemon-zest',
-    author: 'TypeCraft'
+    fileSize: '3.6 MB',
+    gradient: 'from-royal-violet to-electric-iris',
+    author: 'punkrecords',
+    image: 'https://ucarecdn.com/50ce5214-6289-4dd2-ae7d-d22dde92aaa8/-/preview/1000x750/'
   },
   {
-    id: 'pr-stroke-connectors',
-    title: 'Surgical Stroke Connectors',
+    id: 'tribal-slashes',
+    title: 'Tribal Slashes Vector Pack',
     type: 'Icons',
     price: 0, // Free
-    description: 'A dedicated kit of connector lines, nodes, vector arrows, and brand- asterisks for mapping system flows and visual network connections.',
-    rating: 4.8,
-    downloads: '5.6K',
-    fileSize: '850 KB',
-    gradient: 'from-magenta via-crimson to-ember',
-    author: 'Layout Masters'
+    description: 'An editable collection of modular tribal slash symbols, sharp brush strokes, and vectors. Provided as fully layered Adobe Illustrator (.ai) and high-resolution transparent PNG files.',
+    rating: 4.9,
+    downloads: '5.2K',
+    fileSize: '3.4 MB',
+    gradient: 'from-slate to-ash',
+    author: 'punkrecords',
+    image: 'https://ucarecdn.com/3e8c5370-a97e-464f-880c-a87fb3cac504/-/preview/1000x750/'
   },
   {
-    id: 'pr-space-mono',
-    title: 'Space Specimen Mono Pro',
-    type: 'Font',
-    price: 24.00,
-    description: 'Fixed-width display specimen capturing the industrial label aesthetic. Supports extensive OpenType alternate tables and tabular numerals.',
+    id: 'punk-paper-scrap',
+    title: 'Punk Paper Scrap Overlay',
+    type: 'UI Kit',
+    price: 79, // Premium INR 79
+    description: 'A premium single torn scrap paper overlay effect. Features high-resolution transparent PNG paper fiber details, organic ripped edges, and tape details.',
     rating: 4.7,
-    downloads: '850',
-    fileSize: '2.9 MB',
+    downloads: '920',
+    fileSize: '18 MB',
+    gradient: 'from-emerald via-electric-iris to-royal-violet',
+    author: 'punkrecords',
+    image: 'https://ucarecdn.com/aa2e0255-aaed-4340-84e3-6773fe571524/-/preview/1000x750/'
+  },
+  {
+    id: 'vintage-paper-textures',
+    title: 'Vintage Paper Textures Deck',
+    type: 'UI Kit',
+    price: 0, // Free
+    description: 'Curated high-resolution scanning-grade vintage paper textures with organic grain, wrinkles, and aging artifacts. Perfect for layout backgrounds.',
+    rating: 4.8,
+    downloads: '1.4K',
+    fileSize: '210 MB',
+    gradient: 'from-orchid via-blush to-lilac-mist',
+    author: 'punkrecords',
+    image: 'https://ucarecdn.com/1601e557-637c-4bb5-a58a-898e039f7d18/-/preview/1000x750/'
+  },
+  {
+    id: 'graffiti-record-machine',
+    title: 'Graffiti Record Machine PSD',
+    type: 'UI Kit',
+    price: 199, // Premium INR 199
+    description: 'An editable noise texture PSD template with high-quality brutalist FX. Fully layered with raw graffiti tag textures, organic film grain registers, and custom spray mask overlays.',
+    rating: 4.9,
+    downloads: '640',
+    fileSize: '184 MB',
     gradient: 'from-cobalt via-electric-iris to-orchid',
-    author: 'Orbit Studio'
+    author: 'punkrecords',
+    image: 'https://ucarecdn.com/7d723120-7759-41a2-ace2-d3537c510025/-/preview/1000x750/'
   }
 ]

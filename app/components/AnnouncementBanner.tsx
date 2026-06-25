@@ -28,13 +28,13 @@ export default function AnnouncementBanner() {
       {/* Main Promo Text & Button */}
       <div className="flex-1 flex items-center justify-center gap-[8px] sm:gap-[12px] overflow-hidden">
         <span className="font-body text-[9px] sm:text-[11px] md:text-[12px] font-semibold tracking-[0.5px] sm:tracking-[1.5px] text-obsidian text-center uppercase truncate">
-          ⚡ THE TELEGRAF GROTESK SPECIMEN IS NOW LIVE
+          ⚡ GRAFFITI RECORD MACHINE PSD IS NOW LIVE
         </span>
         <Link
-          href="/shop?category=Font"
+          href="/shop/graffiti-record-machine"
           className="bg-paper text-obsidian font-body text-[9px] sm:text-[11px] font-semibold px-[8px] sm:px-[12px] py-[2px] sm:py-[4px] rounded-navpills hover:opacity-90 active:scale-95 transition-all text-center whitespace-nowrap shadow-[0_1px_2px_rgba(18,18,23,0.08)] shrink-0"
         >
-          View Specimen
+          Acquire PSD
         </Link>
       </div>
 

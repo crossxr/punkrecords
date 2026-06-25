@@ -3,7 +3,9 @@
 import { use, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import { RESOURCES } from '../../data/resources'
+import { saveLicenseAction, getLicensesAction } from '../../actions/licenses'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -12,6 +14,7 @@ interface PageProps {
 export default function ProductCheckoutPage({ params }: PageProps) {
   const { id } = use(params)
   const { ownedItems, markAsOwned } = useCart()
+  const { user } = useAuth()
 
   // Find the resource
   const product = RESOURCES.find((r) => r.id === id)
@@ -27,11 +30,33 @@ export default function ProductCheckoutPage({ params }: PageProps) {
   const [txHash, setTxHash] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
 
+  // Sync state if already owned locally
   useEffect(() => {
-    if (product && ownedItems.includes(product.id)) {
+    if (product && ownedItems.includes(product.id) && !user) {
       setIsSuccess(true)
     }
-  }, [product, ownedItems])
+  }, [product, ownedItems, user])
+
+  // Sync state if logged in and owned in PostgreSQL database
+  useEffect(() => {
+    if (user?.email && product) {
+      // Set the default email field for the user convenience
+      setEmail(user.email)
+
+      getLicensesAction(user.email)
+        .then((res) => {
+          if (res.success && res.data) {
+            const ownedRecord = res.data.find((lic) => lic.resource_id === product.id)
+            if (ownedRecord) {
+              setLicenseKey(ownedRecord.license_key)
+              setTxHash(ownedRecord.tx_hash)
+              setIsSuccess(true)
+            }
+          }
+        })
+        .catch((err) => console.error(err))
+    }
+  }, [user, product])
 
   if (!product) {
     return (
@@ -47,7 +72,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
 
   const isFree = product.price === 0
 
-  const handleCheckoutSubmit = (e: React.FormEvent) => {
+  const handleCheckoutSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMsg('')
 
@@ -73,23 +98,45 @@ export default function ProductCheckoutPage({ params }: PageProps) {
 
     setIsProcessing(true)
 
-    setTimeout(() => {
-      setIsProcessing(false)
-      markAsOwned(product.id)
+    // Generate keys
+    const randKey = 'PR-' + Array.from({ length: 3 }, () =>
+      Math.random().toString(36).substring(2, 7).toUpperCase()
+    ).join('-')
 
-      if (!isFree) {
-        const randKey = 'PR-' + Array.from({ length: 3 }, () =>
-          Math.random().toString(36).substring(2, 7).toUpperCase()
-        ).join('-')
-        const randHash = '0x' + Array.from({ length: 40 }, () =>
-          Math.floor(Math.random() * 16).toString(16)
-        ).join('')
-        setLicenseKey(randKey)
-        setTxHash(randHash)
+    const randHash = '0x' + Array.from({ length: 40 }, () =>
+      Math.floor(Math.random() * 16).toString(16)
+    ).join('')
+
+    try {
+      // If user is signed in, save the transaction to the database
+      if (user?.email) {
+        const dbResult = await saveLicenseAction(
+          user.email,
+          product.id,
+          product.title,
+          randKey,
+          randHash
+        )
+        if (!dbResult.success) {
+          setErrorMsg(dbResult.error || 'Failed to save purchase to database. Try again.')
+          setIsProcessing(false)
+          return
+        }
       }
 
-      setIsSuccess(true)
-    }, 2000)
+      // Simulate network latency
+      setTimeout(() => {
+        setIsProcessing(false)
+        markAsOwned(product.id)
+        setLicenseKey(randKey)
+        setTxHash(randHash)
+        setIsSuccess(true)
+      }, 1500)
+
+    } catch (err: any) {
+      setErrorMsg(err.message || 'An error occurred during database checkout write.')
+      setIsProcessing(false)
+    }
   }
 
   // Input formatters
@@ -126,17 +173,28 @@ export default function ProductCheckoutPage({ params }: PageProps) {
 
         {/* Two-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-[48px] lg:gap-[64px] items-start mt-[16px]">
-          
+
           {/* Left Column: Product Logo and Information (Spans 7) */}
           <div className="lg:col-span-7 flex flex-col gap-[32px]">
             {/* Visual Preview Container */}
             <div className={`w-full aspect-[16/10] bg-gradient-to-br ${product.gradient} rounded-cards border border-ash/40 shadow-md relative overflow-hidden flex items-center justify-center p-[48px] select-none`}>
               {/* Background grid */}
-              <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:24px_24px]" />
-              
+              <div className="absolute inset-0 opacity-[0.04] mix-blend-overlay bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none" />
+
+              {product.image ? (
+                <div className="absolute inset-0 z-0">
+                  <img 
+                    src={product.image} 
+                    alt={product.title} 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-obsidian/10" />
+                </div>
+              ) : null}
+
               {/* Central Specimen Graphics */}
               <div className="flex-1 flex items-center justify-center relative z-10">
-                {product.type === 'Font' && (
+                {!product.image && product.type === 'Font' && (
                   <div className="text-center flex flex-col items-center">
                     <span className="font-display text-[96px] sm:text-[120px] font-bold text-paper tracking-tighter leading-none mb-[12px] drop-shadow-[0_4px_16px_rgba(0,0,0,0.15)] animate-pulse">
                       Aa
@@ -147,7 +205,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {product.type === 'UI Kit' && (
+                {!product.image && product.type === 'UI Kit' && (
                   <div className="w-full max-w-[280px] bg-paper/15 backdrop-blur-md rounded-cards p-[28px] border border-paper/20 flex flex-col gap-[16px] shadow-lg">
                     <div className="flex justify-between items-center border-b border-paper/10 pb-[12px]">
                       <div className="h-[14px] w-[60px] bg-paper/40 rounded" />
@@ -163,7 +221,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {product.type === 'Icons' && (
+                {!product.image && product.type === 'Icons' && (
                   <div className="grid grid-cols-3 gap-[28px] text-paper opacity-95 scale-[1.3] drop-shadow-md">
                     <svg className="w-[36px] h-[36px] stroke-current stroke-[1.5] fill-none" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -186,9 +244,9 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                   </div>
                 )}
 
-                {product.type === '3D Asset' && (
+                {!product.image && product.type === '3D Asset' && (
                   <div className="relative w-[120px] h-[120px] flex items-center justify-center scale-110">
-                    <div className="w-[100px] h-[100px] rounded-full bg-paper/20 backdrop-blur-md border border-paper/30 shadow-2xl relative flex items-center justify-center">
+                    <div className="w-[100px] h-[100px] rounded-full bg-paper/20 backdrop-blur-md border border-paper/30 shadow-2xl relative flex items-center justify-center animate-pulse">
                       <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-tr from-lemon-zest to-orchid shadow-lg animate-pulse" />
                     </div>
                   </div>
@@ -196,7 +254,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
               </div>
 
               {/* Tag overlay */}
-              <div className="absolute bottom-[24px] right-[24px] bg-paper/10 backdrop-blur-md border border-paper/20 rounded-full px-[16px] py-[6px] text-paper text-[12px] font-medium font-body select-none">
+              <div className="absolute bottom-[24px] right-[24px] bg-paper/10 backdrop-blur-md border border-paper/20 rounded-full px-[16px] py-[6px] text-paper text-[12px] font-medium font-body select-none z-10">
                 {product.fileSize}
               </div>
             </div>
@@ -222,9 +280,9 @@ export default function ProductCheckoutPage({ params }: PageProps) {
             </div>
 
             {/* Specification Grid Table */}
-            <div className="bg-paper rounded-cards border border-ash/50 p-[32px] shadow-[0_4px_24px_rgba(18,18,23,0.02)] flex flex-col gap-[20px] mt-[16px]">
-              <h3 className="font-display text-[18px] font-bold text-obsidian tracking-tight border-b border-ash/30 pb-[12px] text-left">
-                Technical Specifications
+            <div className="flex flex-col gap-[20px] mt-[16px] border-t border-ash/30 pt-[24px]">
+              <h3 className="font-display text-[18px] font-bold text-obsidian tracking-tight text-left">
+                Specifications
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-[24px] text-left font-body">
                 <div className="flex flex-col gap-[4px]">
@@ -269,7 +327,15 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                 </div>
 
                 <p className="font-body text-caption text-slate leading-relaxed">
-                  The specimen files are compiled. We have registered your license key and sent receipt logs to <strong className="text-obsidian">{email || 'your email'}</strong>.
+                  {user ? (
+                    <>
+                      The specimen files are compiled. We have registered this purchase to your database dashboard and sent receipt logs to <strong className="text-obsidian">{email}</strong>.
+                    </>
+                  ) : (
+                    <>
+                      The specimen files are compiled. We have sent one-time download details to <strong className="text-obsidian">{email}</strong>.
+                    </>
+                  )}
                 </p>
 
                 {/* Receipt Details Card */}
@@ -282,29 +348,33 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                     <span className="truncate pr-[8px]">{product.title}</span>
                     <span>{product.fileSize}</span>
                   </div>
-                  
-                  {!isFree && (
-                    <>
-                      <div className="border-t border-ash/40 pt-12 flex flex-col gap-4">
-                        <span className="text-[11px] text-slate font-medium">LICENSE KEY</span>
-                        <code className="bg-paper p-[10px] rounded border border-ash/40 font-mono text-[13px] text-obsidian break-all font-semibold">
-                          {licenseKey || 'PR-7D8E2-K3N8P-M4T9X'}
-                        </code>
-                      </div>
-                      <div className="flex flex-col gap-4">
-                        <span className="text-[11px] text-slate font-medium">TRANSACTION HASH</span>
-                        <code className="text-[10px] text-slate font-mono break-all font-medium leading-none">
-                          {txHash || '0x5b38da6a701c568545dcfcb03fcb875f56beddc4'}
-                        </code>
-                      </div>
-                    </>
+
+                  <div className="border-t border-ash/40 pt-12 flex flex-col gap-4">
+                    <span className="text-[11px] text-slate font-medium">LICENSE KEY</span>
+                    <code className="bg-paper p-[10px] rounded border border-ash/40 font-mono text-[13px] text-obsidian break-all font-semibold">
+                      {licenseKey || 'PR-FREE-ACCESS-7D8E2'}
+                    </code>
+                  </div>
+                  {txHash && (
+                    <div className="flex flex-col gap-4">
+                      <span className="text-[11px] text-slate font-medium">TRANSACTION HASH</span>
+                      <code className="text-[10px] text-slate font-mono break-all font-medium leading-none">
+                        {txHash}
+                      </code>
+                    </div>
                   )}
                 </div>
+
+                {user && (
+                  <div className="bg-emerald/10 border border-emerald/20 text-emerald font-body text-[12px] p-[12px] rounded-input text-center">
+                    ✓ This license has been permanently stored in your account database library.
+                  </div>
+                )}
 
                 {/* Download Button */}
                 <a
                   href={`data:text/plain;charset=utf-8,${encodeURIComponent(
-                    `punkrecords Specimen Download: ${product.title}\nLicense: ${isFree ? 'Free Commercial Standard' : 'Single Developer Premium'}\nKey: ${licenseKey || 'N/A'}\nFile size: ${product.fileSize}\nTimestamp: ${new Date().toISOString()}\nMock download success!`
+                    `punkrecords Specimen Download: ${product.title}\nLicense: ${isFree ? 'Free Commercial Standard' : 'Single Developer Premium'}\nKey: ${licenseKey || 'N/A'}\nFile size: ${product.fileSize}\nTimestamp: ${new Date().toISOString()}\nDatabase sync: ${user ? 'Authenticated (Active)' : 'Guest (Inactive)'}\nMock download success!`
                   )}`}
                   download={`${product.title.toLowerCase().replace(/\s+/g, '-')}-punkrecords.txt`}
                   className="w-full bg-obsidian text-paper hover:bg-obsidian/90 hover:scale-[1.01] active:scale-[0.99] font-body text-[16px] font-semibold py-[16px] rounded-buttons flex items-center justify-center gap-[8px] shadow-[0_4px_12px_rgba(18,18,23,0.15)] transition-all cursor-pointer text-center"
@@ -338,13 +408,34 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                 <div className="flex items-center justify-between border-b border-ash/30 pb-[16px] font-body">
                   <span className="text-slate font-medium text-[15px]">Unit Price:</span>
                   <span className="font-display text-[22px] font-bold text-obsidian">
-                    {isFree ? 'FREE' : `$${product.price.toFixed(2)}`}
+                    {isFree ? 'FREE' : `₹${product.price}`}
                   </span>
                 </div>
 
                 {errorMsg && (
                   <div className="bg-crimson/10 border border-crimson/30 rounded-input p-[12px] text-caption text-crimson font-body font-medium">
                     {errorMsg}
+                  </div>
+                )}
+
+                {/* Guest user database warning */}
+                {!user && (
+                  <div className="bg-amber/10 border border-amber/30 text-amber font-body text-[12px] p-[14px] rounded-input flex flex-col gap-[6px]">
+                    <span className="font-bold uppercase tracking-wider text-[10px]">Guest Checkout</span>
+                    <p className="leading-normal">
+                      You are not logged in. This download will <strong>not</strong> be saved to your library account.
+                      <Link href="/auth" className="text-obsidian underline font-semibold ml-4 hover:opacity-80">Sign in here</Link> to save keys dynamically.
+                    </p>
+                  </div>
+                )}
+
+                {user && (
+                  <div className="bg-emerald/10 border border-emerald/20 text-emerald font-body text-[12px] p-[14px] rounded-input flex flex-col gap-[6px]">
+                    <span className="font-bold uppercase tracking-wider text-[10px]">Logged In Account</span>
+                    <p className="leading-normal">
+                      Active session: <strong className="text-obsidian">{user.email}</strong>.
+                      This purchase and license key will be saved to your library automatically.
+                    </p>
                   </div>
                 )}
 
@@ -357,14 +448,17 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                     <input
                       type="email"
                       required
+                      disabled={!!user}
                       placeholder="designer@studio.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
+                      className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate disabled:opacity-60 disabled:text-slate"
                     />
-                    <p className="font-body text-[11px] text-slate/85 leading-normal mt-[2px]">
-                      Your mock licensing key and download link will be dispatched here.
-                    </p>
+                    {!user && (
+                      <p className="font-body text-[11px] text-slate/85 leading-normal mt-[2px]">
+                        Your mock licensing key and download link will be dispatched here.
+                      </p>
+                    )}
                   </div>
 
                   {/* Payment Inputs (For paid items) */}
@@ -431,7 +525,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                       </>
                     ) : (
                       <>
-                        <span>{isFree ? 'Acquire Specimen for Free' : `Purchase Specimen — $${product.price.toFixed(2)}`}</span>
+                        <span>{isFree ? 'Acquire Specimen for Free' : `Purchase Specimen — ₹${product.price}`}</span>
                         <svg className="w-[16px] h-[16px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
@@ -440,8 +534,14 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                   </button>
                 </form>
 
-                <div className="text-center font-body text-[11px] text-slate mt-[12px] border-t border-ash/30 pt-[16px]">
-                  <span>🔒 SSL encrypted checkout simulation. No real credit card or cash is charged.</span>
+                <div className="flex items-center justify-center gap-[6px] font-body text-[11px] text-slate mt-[12px] border-t border-ash/30 pt-[16px] select-none">
+                  <span>secured by</span>
+                  <img
+                    src="/logo.svg"
+                    alt="punkrecords logo"
+                    className="h-[14px] w-auto opacity-60"
+                  />
+                  <span>punkrecords</span>
                 </div>
               </div>
             )}

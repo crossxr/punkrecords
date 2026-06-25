@@ -2,17 +2,18 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { useCart, Resource } from '../context/CartContext'
+import { useCart } from '../context/CartContext'
 import { RESOURCES } from '../data/resources'
 
 export default function Shop() {
-  const { openCheckout, ownedItems } = useCart()
+  const { ownedItems } = useCart()
 
   // State
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [selectedPriceType, setSelectedPriceType] = useState<'all' | 'free' | 'paid'>('all')
   const [sortBy, setSortBy] = useState<string>('popular')
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false)
 
   // Listen to router query on mount if any
   useEffect(() => {
@@ -142,18 +143,70 @@ export default function Shop() {
             </div>
 
             {/* Sort Select */}
-            <div className="flex items-center gap-[8px] self-start md:self-auto shrink-0 font-body text-caption">
+            <div className="relative flex items-center gap-[8px] self-start md:self-auto shrink-0 font-body text-caption z-20">
               <span className="text-slate font-medium uppercase tracking-wider text-micro">SORT BY</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="bg-fog text-obsidian font-medium px-[16px] py-[12px] rounded-input border border-ash focus:outline-none focus:border-royal-violet transition-all outline-none"
-              >
-                <option value="popular">Most Popular</option>
-                <option value="rating">Top Rated</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-              </select>
+              
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                  className="bg-fog text-obsidian font-medium px-[16px] py-[12px] rounded-input border border-ash hover:border-ash/80 focus:outline-none focus:border-royal-violet transition-all flex items-center gap-[8px] cursor-pointer select-none min-w-[170px] justify-between text-left"
+                >
+                  <span>
+                    {sortBy === 'popular' && 'Most Popular'}
+                    {sortBy === 'rating' && 'Top Rated'}
+                    {sortBy === 'price-low' && 'Price: Low to High'}
+                    {sortBy === 'price-high' && 'Price: High to Low'}
+                  </span>
+                  <svg className={`w-[12px] h-[12px] text-slate transition-transform duration-200 ${isSortDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isSortDropdownOpen && (
+                  <>
+                    {/* Backdrop to close dropdown on click outside */}
+                    <div 
+                      className="fixed inset-0 z-20 cursor-default" 
+                      onClick={() => setIsSortDropdownOpen(false)}
+                    />
+                    
+                    {/* Dropdown Menu */}
+                    <div className="absolute right-0 mt-[6px] w-full min-w-[180px] bg-paper border border-ash/80 rounded-input shadow-[0_8px_32px_rgba(18,18,23,0.08)] py-[6px] z-30 animate-in fade-in slide-in-from-top-2 duration-150 flex flex-col text-left">
+                      {[
+                        { value: 'popular', label: 'Most Popular' },
+                        { value: 'rating', label: 'Top Rated' },
+                        { value: 'price-low', label: 'Price: Low to High' },
+                        { value: 'price-high', label: 'Price: High to Low' }
+                      ].map((opt) => {
+                        const isSelected = sortBy === opt.value
+                        return (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => {
+                              setSortBy(opt.value)
+                              setIsSortDropdownOpen(false)
+                            }}
+                            className={`w-full px-[16px] py-[10px] text-[13px] font-medium transition-colors text-left cursor-pointer flex items-center justify-between ${
+                              isSelected 
+                                ? 'bg-royal-violet/10 text-royal-violet font-semibold' 
+                                : 'text-obsidian hover:bg-fog hover:text-royal-violet'
+                            }`}
+                          >
+                            <span>{opt.label}</span>
+                            {isSelected && (
+                              <svg className="w-[14px] h-[14px] stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
           </div>
@@ -195,16 +248,27 @@ export default function Shop() {
                   <div className={`aspect-[16/10] bg-gradient-to-br ${item.gradient} p-[24px] flex flex-col justify-between relative overflow-hidden select-none`}>
                     
                     {/* Background noise grid pattern */}
-                    <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:16px_16px]" />
+                    <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:16px_16px] z-0 pointer-events-none" />
                     
+                    {item.image ? (
+                      <div className="absolute inset-0 z-0">
+                        <img 
+                          src={item.image} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-obsidian/50 via-transparent to-obsidian/10" />
+                      </div>
+                    ) : null}
+
                     {/* Badge */}
-                    <span className="self-start bg-paper/20 backdrop-blur-sm text-paper font-body text-[11px] font-semibold uppercase tracking-wider px-[12px] py-[4px] rounded-full border border-paper/10">
+                    <span className="self-start bg-paper/20 backdrop-blur-sm text-paper font-body text-[11px] font-semibold uppercase tracking-wider px-[12px] py-[4px] rounded-full border border-paper/10 relative z-10">
                       {item.type}
                     </span>
 
                     {/* Custom Typographic/Design Specimen Preview */}
-                    <div className="flex-1 flex items-center justify-center">
-                      {item.type === 'Font' && (
+                    <div className="flex-1 flex items-center justify-center relative z-10">
+                      {!item.image && item.type === 'Font' && (
                         <div className="text-center flex flex-col items-center">
                           <span className="font-display text-[64px] font-bold text-paper tracking-tighter leading-none mb-[4px] select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.15)]">
                             Aa
@@ -215,7 +279,7 @@ export default function Shop() {
                         </div>
                       )}
 
-                      {item.type === 'UI Kit' && (
+                      {!item.image && item.type === 'UI Kit' && (
                         <div className="w-full max-w-[160px] bg-paper/15 backdrop-blur-sm rounded-input p-[12px] border border-paper/10 flex flex-col gap-[8px] shadow-sm">
                           <div className="flex justify-between items-center">
                             <div className="h-[10px] w-[40px] bg-paper/40 rounded" />
@@ -230,7 +294,7 @@ export default function Shop() {
                         </div>
                       )}
 
-                      {item.type === 'Icons' && (
+                      {!item.image && item.type === 'Icons' && (
                         <div className="grid grid-cols-3 gap-[16px] text-paper/95 opacity-90 scale-110">
                           {/* Minimal Stroke Icons */}
                           <svg className="w-[24px] h-[24px] stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
@@ -254,7 +318,7 @@ export default function Shop() {
                         </div>
                       )}
 
-                      {item.type === '3D Asset' && (
+                      {!item.image && item.type === '3D Asset' && (
                         <div className="relative w-[80px] h-[80px] flex items-center justify-center">
                           <div className="w-[64px] h-[64px] rounded-full bg-paper/20 backdrop-blur-md border border-paper/30 shadow-lg relative flex items-center justify-center animate-pulse">
                             <div className="w-[40px] h-[40px] rounded-full bg-gradient-to-tr from-lemon-zest to-orchid shadow-md" />
@@ -264,7 +328,7 @@ export default function Shop() {
                     </div>
 
                     {/* Metadata Header */}
-                    <div className="flex justify-between items-center text-paper/90 font-body text-[12px] font-medium">
+                    <div className="flex justify-between items-center text-paper/90 font-body text-[12px] font-medium relative z-10">
                       <span>{item.fileSize}</span>
                       <span className="flex items-center gap-[4px]">
                         ★ {item.rating}
@@ -292,7 +356,7 @@ export default function Shop() {
                       <div className="flex flex-col items-start">
                         <span className="font-body text-[10px] text-slate font-medium uppercase tracking-wider">PRICE</span>
                         <span className="font-display text-subheading font-bold text-obsidian">
-                          {item.price === 0 ? 'FREE' : `$${item.price.toFixed(2)}`}
+                          {item.price === 0 ? 'FREE' : `₹${item.price}`}
                         </span>
                       </div>
 

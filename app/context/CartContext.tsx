@@ -13,6 +13,7 @@ export interface Resource {
   fileSize: string
   gradient: string // CSS class or gradient style
   author: string
+  image?: string
 }
 
 interface CartContextType {

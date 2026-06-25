@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useAuth } from '../context/AuthContext'
 
 export default function Nav() {
   const pathname = usePathname()
   const isHome = pathname === '/'
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, signOut } = useAuth()
 
   return (
     <header
@@ -50,11 +52,7 @@ export default function Nav() {
               href="/"
               className={`font-body text-[15px] font-medium px-[16px] py-[8px] rounded-navpills transition-all duration-200 ${
                 isHome
-                  ? pathname === '/'
-                    ? 'bg-paper/15 text-paper'
-                    : 'text-paper/80 hover:bg-paper/10 hover:text-paper'
-                  : pathname === '/'
-                  ? 'bg-royal-violet text-paper'
+                  ? 'bg-paper/15 text-paper'
                   : 'text-slate hover:bg-fog hover:text-obsidian'
               }`}
             >
@@ -64,10 +62,8 @@ export default function Nav() {
               href="/shop"
               className={`font-body text-[15px] font-medium px-[16px] py-[8px] rounded-navpills transition-all duration-200 ${
                 isHome
-                  ? pathname === '/shop'
-                    ? 'bg-paper/15 text-paper'
-                    : 'text-paper/80 hover:bg-paper/10 hover:text-paper'
-                  : pathname === '/shop'
+                  ? 'text-paper/80 hover:bg-paper/10 hover:text-paper'
+                  : pathname.startsWith('/shop')
                   ? 'bg-royal-violet text-paper'
                   : 'text-slate hover:bg-fog hover:text-obsidian'
               }`}
@@ -79,30 +75,60 @@ export default function Nav() {
 
         {/* Right Side Buttons (Desktop) */}
         <div className="hidden md:flex items-center gap-[16px]">
-          <Link
-            href="/shop"
-            className={`font-body text-[15px] font-medium px-[8px] py-[4px] transition-colors ${
-              isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
-            }`}
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/shop"
-            className={`font-body text-[15px] font-medium px-[20px] py-[12px] rounded-navpills hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center gap-[8px] ${
-              isHome
-                ? 'bg-paper text-obsidian hover:bg-fog shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
-                : 'bg-obsidian text-paper hover:opacity-90 shadow-[0_1px_2px_rgba(18,18,23,0.08)]'
-            }`}
-          >
-            <span>Get started</span>
-            <svg
-              className="w-[16px] h-[16px] fill-none stroke-current stroke-2"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </Link>
+          {user ? (
+            <>
+              <Link
+                href="/account"
+                className={`font-body text-[15px] font-semibold px-[16px] py-[8px] rounded-navpills transition-all duration-200 ${
+                  isHome
+                    ? 'text-paper hover:bg-paper/10'
+                    : 'text-obsidian hover:bg-fog'
+                }`}
+              >
+                My Library
+              </Link>
+              <span className={`font-body text-[13px] opacity-75 ${isHome ? 'text-paper/80' : 'text-slate'}`}>
+                {user.email}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className={`font-body text-[14px] font-medium px-[16px] py-[8px] rounded-navpills transition-colors cursor-pointer border ${
+                  isHome
+                    ? 'border-paper/20 hover:bg-paper/10 text-paper'
+                    : 'border-ash/50 hover:bg-fog text-obsidian'
+                }`}
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/auth"
+                className={`font-body text-[15px] font-medium px-[8px] py-[4px] transition-colors ${
+                  isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
+                }`}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/auth"
+                className={`font-body text-[15px] font-medium px-[20px] py-[12px] rounded-navpills hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center gap-[8px] ${
+                  isHome
+                    ? 'bg-paper text-obsidian hover:bg-fog shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
+                    : 'bg-obsidian text-paper hover:opacity-90 shadow-[0_1px_2px_rgba(18,18,23,0.08)]'
+                }`}
+              >
+                <span>Get started</span>
+                <svg
+                  className="w-[16px] h-[16px] fill-none stroke-current stroke-2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button (Hamburger) */}
@@ -135,10 +161,8 @@ export default function Nav() {
               href="/"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
-                pathname === '/'
-                  ? isHome
-                    ? 'bg-paper/15 text-paper'
-                    : 'bg-royal-violet text-paper'
+                isHome
+                  ? 'bg-paper/15 text-paper'
                   : 'hover:bg-fog hover:text-obsidian'
               }`}
             >
@@ -148,42 +172,66 @@ export default function Nav() {
               href="/shop"
               onClick={() => setIsMobileMenuOpen(false)}
               className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
-                pathname === '/shop'
-                  ? isHome
-                    ? 'bg-paper/15 text-paper'
-                    : 'bg-royal-violet text-paper'
+                pathname.startsWith('/shop')
+                  ? 'bg-royal-violet text-paper'
                   : 'text-slate hover:bg-fog hover:text-obsidian'
               }`}
             >
               Shop Resources
             </Link>
             <div className="border-t border-current/15 pt-[12px] flex flex-col gap-[12px]">
-              <Link
-                href="/shop"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`font-body text-[15px] font-medium py-[8px] px-[12px] transition-colors ${
-                  isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
-                }`}
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/shop"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`font-body text-[15px] font-semibold text-center py-[12px] px-[16px] rounded-buttons flex items-center justify-center gap-[8px] ${
-                  isHome
-                    ? 'bg-paper text-obsidian hover:bg-fog'
-                    : 'bg-obsidian text-paper hover:opacity-90'
-                }`}
-              >
-                <span>Get started</span>
-                <svg
-                  className="w-[14px] h-[14px] fill-none stroke-current stroke-2"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </Link>
+              {user ? (
+                <>
+                  <span className="font-body text-[12px] px-[12px] opacity-75">
+                    {user.email}
+                  </span>
+                  <Link
+                    href="/account"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="font-body text-[15px] font-medium py-[8px] px-[12px] rounded-input hover:bg-fog hover:text-obsidian transition-colors"
+                  >
+                    My Library
+                  </Link>
+                  <button
+                    onClick={() => {
+                      signOut()
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className="font-body text-[15px] font-medium py-[8px] px-[12px] text-left rounded-input hover:bg-fog hover:text-obsidian transition-colors cursor-pointer w-full"
+                  >
+                    Sign out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/auth"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`font-body text-[15px] font-medium py-[8px] px-[12px] transition-colors ${
+                      isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
+                    }`}
+                  >
+                    Sign in
+                  </Link>
+                  <Link
+                    href="/auth"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`font-body text-[15px] font-semibold text-center py-[12px] px-[16px] rounded-buttons flex items-center justify-center gap-[8px] ${
+                      isHome
+                        ? 'bg-paper text-obsidian hover:bg-fog'
+                        : 'bg-obsidian text-paper hover:opacity-90'
+                    }`}
+                  >
+                    <span>Get started</span>
+                    <svg
+                      className="w-[14px] h-[14px] fill-none stroke-current stroke-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

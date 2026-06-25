@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/app/context/CartContext";
-import AnnouncementBanner from "@/app/components/AnnouncementBanner";
-import Nav from "@/app/components/Nav";
-import Footer from "@/app/components/Footer";
-import ChatWidget from "@/app/components/ChatWidget";
+import { AuthProvider } from "@/app/context/AuthContext";
+import RootLayoutWrapper from "@/app/components/RootLayoutWrapper";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-circularpro-book",
@@ -35,13 +33,11 @@ export default function RootLayout({
       className={`${plusJakartaSans.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body bg-fog text-obsidian">
-        <CartProvider>
-          <AnnouncementBanner />
-          <Nav />
-          <main className="flex-1 flex flex-col">{children}</main>
-          <Footer />
-          <ChatWidget />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <RootLayoutWrapper>{children}</RootLayoutWrapper>
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

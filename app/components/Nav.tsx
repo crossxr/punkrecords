@@ -13,8 +13,8 @@ export default function Nav() {
     <header
       className={`sticky top-0 z-40 w-full h-[64px] flex items-center justify-between px-[24px] md:px-[80px] transition-all duration-300 ${
         isHome
-          ? 'bg-royal-violet border-b border-paper/10 text-paper'
-          : 'bg-paper border-b border-ash text-obsidian shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
+          ? 'bg-royal-violet text-paper'
+          : 'bg-paper text-obsidian shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
       }`}
     >
       <div className="flex items-center gap-[32px] w-full max-w-[1400px] mx-auto justify-between relative">
@@ -23,15 +23,11 @@ export default function Nav() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-[12px] group shrink-0">
             {/* Logo Icon */}
-            <div className="w-[32px] h-[32px] bg-lemon-zest rounded-full flex items-center justify-center relative overflow-hidden group-hover:rotate-12 transition-transform duration-300 shrink-0">
-              <svg
-                className="absolute -top-[1px] -right-[1px] w-[16px] h-[16px] text-emerald fill-current"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-              </svg>
-              <div className="w-[10px] h-[10px] bg-paper rounded-full absolute top-[8px] left-[8px]" />
-            </div>
+            <img
+              src="/logo.svg"
+              alt="punkrecords"
+              className="h-[32px] w-auto group-hover:rotate-12 transition-transform duration-300 shrink-0"
+            />
             
             {/* Wordmark and Subtext container */}
             <div className="flex flex-col items-start leading-none gap-[2px]">

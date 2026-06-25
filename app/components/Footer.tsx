@@ -10,9 +10,11 @@ export default function Footer() {
         {/* Brand Block */}
         <div className="flex flex-col gap-[16px] md:col-span-2">
           <Link href="/" className="flex items-center gap-[12px] group w-fit">
-            <div className="w-[32px] h-[32px] bg-lemon-zest rounded-full flex items-center justify-center relative overflow-hidden shrink-0">
-              <div className="w-[8px] h-[8px] bg-paper rounded-full absolute top-[6px] left-[6px]" />
-            </div>
+            <img
+              src="/logo.svg"
+              alt="punkrecords"
+              className="h-[32px] w-auto group-hover:rotate-12 transition-transform duration-300 shrink-0"
+            />
             <div className="flex flex-col items-start leading-none gap-[2px]">
               <span className="font-display text-[24px] font-bold text-paper tracking-tight">
                 punkrecords<span className="text-lemon-zest">*</span>

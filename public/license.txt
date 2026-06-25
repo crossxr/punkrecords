@@ -1,0 +1,78 @@
+================================================================================
+PUNKRECORDS* DIGITAL RESOURCE LICENSE AGREEMENT (v1.0)
+================================================================================
+Company: punkrecords* (a superxepic company)
+Registry URL: https://punkrecords.superxepic.dev
+License Scope: Standard Commercial & Personal Use
+
+By downloading, installing, or using any digital resources (including but not
+limited to font specimen files, typography files, UI kits, wireframe templates,
+vector icons, and 3D assets) provided by punkrecords*, you agree to be bound
+by the terms of this License Agreement.
+
+--------------------------------------------------------------------------------
+1. GRANT OF LICENSE
+--------------------------------------------------------------------------------
+Subject to the terms and conditions herein, punkrecords* grants you a non-exclusive,
+non-transferable, worldwide, perpetual license to download, install, and use the
+digital resources for both Personal and Commercial projects.
+
+--------------------------------------------------------------------------------
+2. PERMITTED USES
+--------------------------------------------------------------------------------
+Under this standard license, you are permitted to:
+- Install and use the assets on up to three (3) active workstations owned or
+  operated by the licensee.
+- Incorporate the assets into personal projects, client work, web applications,
+  mobile applications, software interfaces, print media, and digital mockups.
+- Modify, customize, resize, recolor, and adapt the assets (vectors, mockups,
+  and layout grids) to fit your design system and specifications.
+- Use the assets in unlimited commercial end-products, provided the end-products
+  themselves are not templates or source assets for redistribution.
+
+--------------------------------------------------------------------------------
+3. RESTRICTIONS & PROHIBITED USES
+--------------------------------------------------------------------------------
+Under this standard license, you are strictly prohibited from:
+- Sublicensing, reselling, redistributing, hosting, renting, or leasing the
+  source files (including raw Figma kits, SVG vector codes, font files, and 3D
+  models) to any third party.
+- Including the source assets in any website builder, theme generator, or
+  template bundle where the end-user can extract the original files.
+- Claiming intellectual property or copyright ownership of the original assets,
+  modified or unmodified.
+- Packaging the resources into another library, download repository, or competitive
+  marketplace tool.
+
+--------------------------------------------------------------------------------
+4. INTELLECTUAL PROPERTY & OWNERSHIP
+--------------------------------------------------------------------------------
+All title, copyrights, and intellectual property rights in and to the resources
+(including but not limited to typography design, wireframe systems, layout grids,
+and vector shapes) are owned exclusively by punkrecords* and its original creators.
+No title or ownership of the resources is transferred to the licensee.
+
+--------------------------------------------------------------------------------
+5. WARRANTY & LIMITATION OF LIABILITY
+--------------------------------------------------------------------------------
+THE RESOURCES ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+OR IMPLIED. PUNKRECORDS* DOES NOT WARRANT THAT THE FUNCTIONS CONTAINED IN THE
+RESOURCES WILL MEET YOUR REQUIREMENTS OR THAT THE OPERATION OF THE SOFTWARE WILL
+BE UNINTERRUPTED OR ERROR-FREE.
+
+IN NO EVENT SHALL PUNKRECORDS* OR ITS DIRECTORS BE LIABLE FOR ANY DIRECT,
+INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE
+OR INABILITY TO USE THE ASSETS.
+
+--------------------------------------------------------------------------------
+6. TERMINATION
+--------------------------------------------------------------------------------
+This License Agreement is effective until terminated. Your rights under this
+License will terminate automatically without notice from punkrecords* if you fail
+to comply with any term(s) of this Agreement. Upon termination, you must destroy
+and delete all copies of the resources in your possession.
+
+================================================================================
+Surgical-grade design assets for high-speed creative layouts.
+Copyright (c) 2026 punkrecords Inc. All rights reserved.
+================================================================================

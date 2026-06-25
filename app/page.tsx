@@ -384,8 +384,8 @@ export default function Home() {
         </div>
       </section>
       {/* 4. Testimonial / Case Study Card Section */}
-      <section className="w-full py-[64px] sm:py-[80px] px-[24px] md:px-[48px] bg-paper">
-        <div className="max-w-[1000px] mx-auto flex flex-col gap-[40px] sm:gap-[56px]">
+      <section className="w-full py-[64px] sm:py-[80px] px-[24px] md:px-[80px] bg-fog">
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col gap-[40px] sm:gap-[56px]">
 
           <div className="flex flex-col md:flex-row items-start md:items-center gap-[24px] sm:gap-[48px]">
             {/* Custom Mesh Avatar */}
@@ -408,62 +408,36 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 3-Up Stat Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-[24px] sm:gap-[16px] border-t border-ash/50 pt-[32px] sm:pt-[48px] mt-[16px] text-left">
-            <div>
-              <span className="font-display text-[40px] sm:text-heading-lg md:text-display font-bold text-obsidian tracking-tight leading-none block mb-[8px]">
-                150K+
-              </span>
-              <span className="font-body text-[11px] sm:text-caption font-semibold tracking-[2px] text-slate uppercase">
-                DESIGNERS ENROLLED
-              </span>
-            </div>
-            <div>
-              <span className="font-display text-[40px] sm:text-heading-lg md:text-display font-bold text-obsidian tracking-tight leading-none block mb-[8px]">
-                1.2M+
-              </span>
-              <span className="font-body text-[11px] sm:text-caption font-semibold tracking-[2px] text-slate uppercase">
-                FILES DOWNLOADED
-              </span>
-            </div>
-            <div>
-              <span className="font-display text-[40px] sm:text-heading-lg md:text-display font-bold text-obsidian tracking-tight leading-none block mb-[8px]">
-                99.4%
-              </span>
-              <span className="font-body text-[11px] sm:text-caption font-semibold tracking-[2px] text-slate uppercase">
-                SATISFACTION RATING
-              </span>
-            </div>
-          </div>
 
         </div>
       </section>
-
       {/* 5. Section CTA Band - Full-bleed Violet */}
-      <section className="bg-royal-violet text-paper py-[64px] sm:py-[96px] px-[24px] md:px-[48px] text-center relative overflow-hidden">
+      <section className="bg-royal-violet text-paper py-[64px] sm:py-[96px] px-[24px] md:px-[80px] text-center relative overflow-hidden">
         {/* Decorative glows */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-lemon-zest/10 rounded-full blur-[100px] pointer-events-none" />
 
-        <div className="max-w-[800px] mx-auto flex flex-col items-center gap-[32px] relative z-10">
-          <span className="font-body text-caption font-semibold tracking-[2px] text-lemon-zest uppercase">
-            DEPLOY INSTANTLY
-          </span>
-          <h2 className="font-display text-subheading sm:text-heading md:text-heading-lg font-bold text-paper tracking-tight leading-tight max-w-xl mx-auto">
-            Upgrade your typography and layouts today.
-          </h2>
-          <p className="font-body text-caption sm:text-body-lg text-paper/85 max-w-md mx-auto">
-            Acquire single developer licenses or complete organizational specimen folders. Full commercial licensing covers web, app, and print channels.
-          </p>
-          <div className="pt-[8px] w-full sm:w-auto">
-            <Link
-              href="/shop"
-              className="bg-paper text-obsidian hover:bg-fog hover:scale-105 active:scale-95 font-body text-[16px] font-semibold px-[32px] py-[16px] rounded-largecta transition-all shadow-[0_10px_30px_rgba(18,18,23,0.15)] flex items-center justify-center gap-[8px] w-full sm:w-auto"
-            >
-              <span>Explore Resource Shop</span>
-              <svg className="w-[18px] h-[18px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </Link>
+        <div className="w-full max-w-[1400px] mx-auto relative z-10">
+          <div className="max-w-[800px] mx-auto flex flex-col items-center gap-[32px] text-center">
+            <span className="font-body text-caption font-semibold tracking-[2px] text-lemon-zest uppercase">
+              DEPLOY INSTANTLY
+            </span>
+            <h2 className="font-display text-subheading sm:text-heading md:text-heading-lg font-bold text-paper tracking-tight leading-tight">
+              Upgrade your typography and layouts today.
+            </h2>
+            <p className="font-body text-caption sm:text-body-lg text-paper/85 max-w-[640px] mx-auto leading-relaxed">
+              Acquire single developer licenses or complete organizational specimen folders. Full commercial licensing covers web, app, and print channels.
+            </p>
+            <div className="pt-[8px] w-full sm:w-auto">
+              <Link
+                href="/shop"
+                className="bg-paper text-obsidian hover:bg-fog hover:scale-105 active:scale-95 font-body text-[16px] font-semibold px-[32px] py-[16px] rounded-largecta transition-all shadow-[0_10px_30px_rgba(18,18,23,0.15)] flex items-center justify-center gap-[8px] w-full sm:w-auto"
+              >
+                <span>Explore Resource Shop</span>
+                <svg className="w-[18px] h-[18px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

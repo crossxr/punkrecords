@@ -6,7 +6,6 @@ import AnnouncementBanner from "@/app/components/AnnouncementBanner";
 import Nav from "@/app/components/Nav";
 import Footer from "@/app/components/Footer";
 import ChatWidget from "@/app/components/ChatWidget";
-import CheckoutModal from "@/app/components/CheckoutModal";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-circularpro-book",
@@ -42,7 +41,6 @@ export default function RootLayout({
           <main className="flex-1 flex flex-col">{children}</main>
           <Footer />
           <ChatWidget />
-          <CheckoutModal />
         </CartProvider>
       </body>
     </html>

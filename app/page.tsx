@@ -146,7 +146,7 @@ export default function Home() {
       {/* 3. Section Header & Feature Card Grid */}
       <section className="w-full py-[80px] sm:py-[120px] px-[24px] md:px-[80px] bg-fog">
         <div className="w-full max-w-[1400px] mx-auto flex flex-col">
-          
+
           {/* Header Split Row */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-[48px] lg:gap-[64px] mb-[48px] items-end">
             {/* Left Column: Badge and Headline */}
@@ -174,21 +174,19 @@ export default function Home() {
           <div className="flex items-center gap-[4px] bg-paper p-[4px] border border-ash/40 rounded-full w-fit mb-[48px] select-none">
             <button
               onClick={() => setActiveTab('marketplace')}
-              className={`font-body text-[14px] font-semibold px-[24px] py-[10px] rounded-full cursor-pointer transition-all duration-200 ${
-                activeTab === 'marketplace'
+              className={`font-body text-[14px] font-semibold px-[24px] py-[10px] rounded-full cursor-pointer transition-all duration-200 ${activeTab === 'marketplace'
                   ? 'bg-obsidian text-paper shadow-sm'
                   : 'text-slate hover:text-obsidian'
-              }`}
+                }`}
             >
               Marketplace
             </button>
             <button
               onClick={() => setActiveTab('punkdrive')}
-              className={`font-body text-[14px] font-semibold px-[24px] py-[10px] rounded-full cursor-pointer transition-all duration-200 flex items-center gap-[8px] ${
-                activeTab === 'punkdrive'
+              className={`font-body text-[14px] font-semibold px-[24px] py-[10px] rounded-full cursor-pointer transition-all duration-200 flex items-center gap-[8px] ${activeTab === 'punkdrive'
                   ? 'bg-obsidian text-paper shadow-sm'
                   : 'text-slate hover:text-obsidian'
-              }`}
+                }`}
             >
               <div className="w-[15px] h-[18px] relative flex items-center shrink-0 select-none pointer-events-none">
                 <Image
@@ -199,12 +197,11 @@ export default function Home() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <span>punkdrive™</span>
-              <span className={`text-[9px] px-[6px] py-[2px] rounded-full uppercase tracking-wider font-bold transition-colors ${
-                activeTab === 'punkdrive'
+              <span>Punkdrive™</span>
+              <span className={`text-[9px] px-[6px] py-[2px] rounded-full uppercase tracking-wider font-bold transition-colors ${activeTab === 'punkdrive'
                   ? 'bg-paper/25 text-paper'
                   : 'bg-royal-violet/10 text-royal-violet'
-              }`}>
+                }`}>
                 Soon
               </span>
             </button>
@@ -227,7 +224,7 @@ export default function Home() {
                       Pay seamlessly with global credit cards or grab free resource specimens instantly.
                     </p>
                   </div>
-                  
+
                   {/* Visual: Marketplace Image 1 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image
@@ -254,7 +251,7 @@ export default function Home() {
                       Access your design resources and files immediately after checkout with direct download links.
                     </p>
                   </div>
-                  
+
                   {/* Visual: Marketplace Image 2 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image
@@ -281,7 +278,7 @@ export default function Home() {
                       Re-download any purchased wireframes, fonts, or assets anytime from your dashboard.
                     </p>
                   </div>
-                  
+
                   {/* Visual: Marketplace Image 3 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image
@@ -310,7 +307,7 @@ export default function Home() {
                       Keep all your design assets, vectors, and font files organized in a single, high-speed vault.
                     </p>
                   </div>
-                  
+
                   {/* Visual: punkdrive Image 1 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image
@@ -337,7 +334,7 @@ export default function Home() {
                       Convert SVG vectors to PNG, WebP, or high-res JPG formats in bulk in seconds.
                     </p>
                   </div>
-                  
+
                   {/* Visual: punkdrive Image 2 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image
@@ -364,7 +361,7 @@ export default function Home() {
                       Upscale textures and remove image backgrounds in bulk using surgical precision.
                     </p>
                   </div>
-                  
+
                   {/* Visual: punkdrive Image 3 */}
                   <div className="w-full absolute bottom-[36px] left-1/2 -translate-x-1/2 max-w-[280px] transition-all duration-300 group-hover:bottom-[48px] pointer-events-none flex items-center justify-center">
                     <Image

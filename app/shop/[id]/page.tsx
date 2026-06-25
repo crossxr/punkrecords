@@ -6,6 +6,8 @@ import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { RESOURCES } from '../../data/resources'
 import { saveLicenseAction, getLicensesAction } from '../../actions/licenses'
+import { createRazorpayOrderAction } from '../../actions/razorpay'
+import { SiRazorpay } from 'react-icons/si'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -19,16 +21,23 @@ export default function ProductCheckoutPage({ params }: PageProps) {
   // Find the resource
   const product = RESOURCES.find((r) => r.id === id)
 
-  const [email, setEmail] = useState('')
-  const [cardNumber, setCardNumber] = useState('')
-  const [cardExpiry, setCardExpiry] = useState('')
-  const [cardCvc, setCardCvc] = useState('')
-
   const [isProcessing, setIsProcessing] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [licenseKey, setLicenseKey] = useState('')
   const [txHash, setTxHash] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
+
+  // Load Razorpay Checkout Script
+  useEffect(() => {
+    const scriptId = 'razorpay-checkout-script'
+    if (!document.getElementById(scriptId)) {
+      const script = document.createElement('script')
+      script.id = scriptId
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.async = true
+      document.body.appendChild(script)
+    }
+  }, [])
 
   // Sync state if already owned locally
   useEffect(() => {
@@ -40,9 +49,6 @@ export default function ProductCheckoutPage({ params }: PageProps) {
   // Sync state if logged in and owned in PostgreSQL database
   useEffect(() => {
     if (user?.email && product) {
-      // Set the default email field for the user convenience
-      setEmail(user.email)
-
       getLicensesAction(user.email)
         .then((res) => {
           if (res.success && res.data) {
@@ -76,88 +82,147 @@ export default function ProductCheckoutPage({ params }: PageProps) {
     e.preventDefault()
     setErrorMsg('')
 
-    if (!email) {
-      setErrorMsg('Please enter a valid email address.')
-      return
-    }
-
-    if (!isFree) {
-      if (cardNumber.replace(/\s/g, '').length < 16) {
-        setErrorMsg('Please enter a valid 16-digit card number.')
-        return
-      }
-      if (cardExpiry.length < 5) {
-        setErrorMsg('Please enter card expiration (MM/YY).')
-        return
-      }
-      if (cardCvc.length < 3) {
-        setErrorMsg('Please enter a valid 3-digit CVC.')
-        return
-      }
-    }
-
     setIsProcessing(true)
 
     // Generate keys
     const randKey = 'PR-' + Array.from({ length: 3 }, () =>
       Math.random().toString(36).substring(2, 7).toUpperCase()
     ).join('-')
-
+    
     const randHash = '0x' + Array.from({ length: 40 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('')
 
     try {
-      // If user is signed in, save the transaction to the database
-      if (user?.email) {
-        const dbResult = await saveLicenseAction(
-          user.email,
-          product.id,
-          product.title,
-          randKey,
-          randHash
+      if (isFree) {
+        // Direct free download
+        if (user?.email) {
+          const dbResult = await saveLicenseAction(
+            user.email,
+            product.id,
+            product.title,
+            randKey,
+            randHash
+          )
+          if (!dbResult.success) {
+            setErrorMsg(dbResult.error || 'Failed to save purchase to database. Try again.')
+            setIsProcessing(false)
+            return
+          }
+        }
+
+        setTimeout(() => {
+          setIsProcessing(false)
+          markAsOwned(product.id)
+          setLicenseKey(randKey)
+          setTxHash(randHash)
+          setIsSuccess(true)
+        }, 1000)
+
+      } else {
+        // Paid Premium item - Create Razorpay order on server
+        const rzpResult = await createRazorpayOrderAction(
+          product.price, 
+          'rcpt_' + Math.random().toString(36).substring(2, 10)
         )
-        if (!dbResult.success) {
-          setErrorMsg(dbResult.error || 'Failed to save purchase to database. Try again.')
+
+        if (!rzpResult.success || !rzpResult.order || !rzpResult.keyId) {
+          setErrorMsg(rzpResult.error || 'Failed to initialize payment gateway order.')
           setIsProcessing(false)
           return
         }
+
+        const order = rzpResult.order
+        const keyId = rzpResult.keyId
+
+        // If mock mode fallback is enabled (for safety if keys are placeholders or testing environment)
+        if (rzpResult.isMock || !(window as any).Razorpay) {
+          console.warn('Razorpay running in Mock Simulator fallback mode.')
+          
+          setTimeout(async () => {
+            if (user?.email) {
+              const dbResult = await saveLicenseAction(
+                user.email,
+                product.id,
+                product.title,
+                randKey,
+                randHash
+              )
+              if (!dbResult.success) {
+                setErrorMsg(dbResult.error || 'Failed to save purchase to database.')
+                setIsProcessing(false)
+                return
+              }
+            }
+            
+            setIsProcessing(false)
+            markAsOwned(product.id)
+            setLicenseKey(randKey)
+            setTxHash(randHash)
+            setIsSuccess(true)
+          }, 1500)
+          return
+        }
+
+        // Initialize and open real Razorpay checkout overlay using the keyId returned by server action
+        const rzp = new (window as any).Razorpay({
+          key: keyId,
+          amount: order.amount,
+          currency: order.currency,
+          name: 'punkrecords*',
+          description: product.title,
+          order_id: order.id,
+          handler: async (response: any) => {
+            setIsProcessing(true)
+            setErrorMsg('')
+            try {
+              const payKey = 'PR-' + response.razorpay_payment_id.toUpperCase()
+              const payTx = response.razorpay_payment_id
+
+              if (user?.email) {
+                const dbResult = await saveLicenseAction(
+                  user.email,
+                  product.id,
+                  product.title,
+                  payKey,
+                  payTx
+                )
+                if (!dbResult.success) {
+                  setErrorMsg(dbResult.error || 'Payment succeeded but failed database registry.')
+                  setIsProcessing(false)
+                  return
+                }
+              }
+
+              markAsOwned(product.id)
+              setLicenseKey(payKey)
+              setTxHash(payTx)
+              setIsSuccess(true)
+            } catch (err: any) {
+              setErrorMsg(err.message || 'Error occurred recording payment details.')
+            } finally {
+              setIsProcessing(false)
+            }
+          },
+          prefill: {
+            email: (user?.email || 'guest@punkrecords.com').trim().toLowerCase()
+          },
+          theme: {
+            color: '#5423E7' // Brand color: royal-violet
+          },
+          modal: {
+            ondismiss: () => {
+              setIsProcessing(false)
+            }
+          }
+        })
+
+        rzp.open()
       }
-
-      // Simulate network latency
-      setTimeout(() => {
-        setIsProcessing(false)
-        markAsOwned(product.id)
-        setLicenseKey(randKey)
-        setTxHash(randHash)
-        setIsSuccess(true)
-      }, 1500)
-
     } catch (err: any) {
-      setErrorMsg(err.message || 'An error occurred during database checkout write.')
+      setErrorMsg(err.message || 'An error occurred during checkout setup.')
       setIsProcessing(false)
     }
-  }
-
-  // Input formatters
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '')
-    const formatted = val.match(/.{1,4}/g)?.join(' ') || val
-    setCardNumber(formatted.substring(0, 19))
-  }
-
-  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '')
-    let formatted = val
-    if (val.length >= 2) {
-      formatted = val.substring(0, 2) + '/' + val.substring(2, 4)
-    }
-    setCardExpiry(formatted.substring(0, 5))
-  }
-
-  const handleCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, '')
-    setCardCvc(val.substring(0, 3))
   }
 
   return (
@@ -329,11 +394,11 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                 <p className="font-body text-caption text-slate leading-relaxed">
                   {user ? (
                     <>
-                      The specimen files are compiled. We have registered this purchase to your database dashboard and sent receipt logs to <strong className="text-obsidian">{email}</strong>.
+                      The specimen files are compiled. We have registered this purchase to your database dashboard and sent receipt logs to <strong className="text-obsidian">{user.email}</strong>.
                     </>
                   ) : (
                     <>
-                      The specimen files are compiled. We have sent one-time download details to <strong className="text-obsidian">{email}</strong>.
+                      The specimen files are compiled. Your mock licensing key and download link are ready.
                     </>
                   )}
                 </p>
@@ -430,84 +495,34 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                 )}
 
                 {user && (
-                  <div className="bg-emerald/10 border border-emerald/20 text-emerald font-body text-[12px] p-[14px] rounded-input flex flex-col gap-[6px]">
-                    <span className="font-bold uppercase tracking-wider text-[10px]">Logged In Account</span>
-                    <p className="leading-normal">
-                      Active session: <strong className="text-obsidian">{user.email}</strong>.
-                      This purchase and license key will be saved to your library automatically.
+                  <div className="bg-royal-violet/5 border-l-4 border-royal-violet rounded-r-input p-[16px] flex flex-col gap-[8px] font-body text-[13px] relative overflow-hidden shadow-sm">
+                    {/* Background decorative blur */}
+                    <div className="absolute -right-16 -top-16 w-32 h-32 bg-lemon-zest/10 rounded-full blur-[40px] pointer-events-none" />
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold uppercase tracking-wider text-[10px] text-royal-violet">
+                        Logged In Account
+                      </span>
+                      <span className="bg-lemon-zest text-obsidian text-[9px] font-bold px-[6px] py-[2px] rounded-full uppercase tracking-wider">
+                        Active Session
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center gap-[8px] mt-[4px]">
+                      <svg className="w-[16px] h-[16px] text-royal-violet stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
+                      </svg>
+                      <strong className="text-obsidian font-semibold break-all">{user.email}</strong>
+                    </div>
+                    
+                    <p className="text-slate text-[11px] leading-normal mt-[2px]">
+                      This purchase and license key will be saved to your library dashboard automatically.
                     </p>
                   </div>
                 )}
 
                 <form onSubmit={handleCheckoutSubmit} className="flex flex-col gap-[20px]">
-                  {/* Email Input */}
-                  <div className="flex flex-col gap-[8px]">
-                    <label className="block font-body text-[11px] font-bold text-slate uppercase tracking-wider">
-                      Delivery Email Address
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      disabled={!!user}
-                      placeholder="designer@studio.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate disabled:opacity-60 disabled:text-slate"
-                    />
-                    {!user && (
-                      <p className="font-body text-[11px] text-slate/85 leading-normal mt-[2px]">
-                        Your mock licensing key and download link will be dispatched here.
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Payment Inputs (For paid items) */}
-                  {!isFree && (
-                    <div className="flex flex-col gap-[16px] border-t border-ash/30 pt-[20px] mt-[8px]">
-                      <div className="flex flex-col gap-[8px]">
-                        <label className="block font-body text-[11px] font-bold text-slate uppercase tracking-wider">
-                          Card Number
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="4111 2222 3333 4444"
-                          value={cardNumber}
-                          onChange={handleCardNumberChange}
-                          className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-[16px]">
-                        <div className="flex flex-col gap-[8px]">
-                          <label className="block font-body text-[11px] font-bold text-slate uppercase tracking-wider">
-                            Expiry Date
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="MM/YY"
-                            value={cardExpiry}
-                            onChange={handleExpiryChange}
-                            className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
-                          />
-                        </div>
-                        <div className="flex flex-col gap-[8px]">
-                          <label className="block font-body text-[11px] font-bold text-slate uppercase tracking-wider">
-                            CVC / CVV
-                          </label>
-                          <input
-                            type="text"
-                            required
-                            placeholder="321"
-                            value={cardCvc}
-                            onChange={handleCvcChange}
-                            className="w-full bg-fog text-obsidian font-body text-[15px] px-[16px] py-[14px] rounded-input border border-ash/50 focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {/* Note: Delivery Email Input removed per user request */}
 
                   {/* Submit Button */}
                   <button
@@ -525,10 +540,13 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                       </>
                     ) : (
                       <>
-                        <span>{isFree ? 'Acquire Specimen for Free' : `Purchase Specimen — ₹${product.price}`}</span>
-                        <svg className="w-[16px] h-[16px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+                        {!isFree && <SiRazorpay className="w-[18px] h-[18px] shrink-0" />}
+                        <span>{isFree ? 'Acquire Specimen for Free' : 'Pay with Razorpay'}</span>
+                        {isFree && (
+                          <svg className="w-[16px] h-[16px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        )}
                       </>
                     )}
                   </button>

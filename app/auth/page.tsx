@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '../context/AuthContext'
@@ -18,8 +18,13 @@ export default function AuthPage() {
   const [errorMsg, setErrorMsg] = useState('')
 
   // Redirect if already authenticated
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/shop')
+    }
+  }, [loading, user, router])
+
   if (!loading && user) {
-    router.push('/shop')
     return null
   }
 
@@ -241,10 +246,14 @@ export default function AuthPage() {
             </button>
           </form>
 
-          <div className="text-center border-t border-ash/30 pt-[16px]">
-            <span className="font-body text-[11px] text-slate">
-              🔒 Powered by Neon Auth database integration.
-            </span>
+          <div className="flex items-center justify-center gap-[6px] font-body text-[11px] text-slate border-t border-ash/30 pt-[16px] select-none">
+            <span>secured by</span>
+            <img
+              src="/logo.svg"
+              alt="punkrecords logo"
+              className="h-[14px] w-auto opacity-60"
+            />
+            <span>punkrecords</span>
           </div>
 
         </div>

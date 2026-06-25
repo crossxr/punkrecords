@@ -11,7 +11,7 @@ export default function Footer() {
       {/* Row 1: Brand Info & Links Grid (Bounded max-width with responsive horizontal padding) */}
       <div className="w-full max-w-[1400px] mx-auto px-[24px] md:px-[80px] relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-[48px] lg:gap-[64px]">
-          
+
           {/* Left Block (Spans 5 columns): Logo, description, and socials */}
           <div className="lg:col-span-5 flex flex-col gap-[28px]">
             <Link href="/" className="flex items-center gap-[12px] group w-fit">
@@ -29,7 +29,7 @@ export default function Footer() {
                 </span>
               </div>
             </Link>
-            
+
             <p className="font-body text-body-lg text-slate max-w-md leading-relaxed">
               The premium command deck for designer assets. A curated repository of surgical grade resources for high-speed creative layouts.
             </p>
@@ -56,7 +56,7 @@ export default function Footer() {
 
           {/* Right Area (Spans 7 columns): Links in 3 tidy columns */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-[32px] sm:gap-[40px]">
-            
+
             {/* Links Col 1: Explore */}
             <div className="flex flex-col gap-[20px]">
               <span className="font-body text-caption font-semibold tracking-[2.5px] text-orchid uppercase">
@@ -85,7 +85,7 @@ export default function Footer() {
                       alt="punkdrive logo"
                       className="h-[15px] w-auto object-contain select-none pointer-events-none inline-block shrink-0"
                     />
-                    <span>punkdrive™</span>
+                    <span>Punkdrive™</span>
                   </Link>
                 </li>
                 <li><Link href="#" className="hover:text-lemon-zest hover:translate-x-[2px] transition-all inline-block">Knowledge Base</Link></li>

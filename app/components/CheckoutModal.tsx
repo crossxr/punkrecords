@@ -103,28 +103,28 @@ export default function CheckoutModal() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-16 md:p-32 bg-obsidian/75 backdrop-blur-sm animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-[12px] sm:p-[32px] bg-obsidian/75 backdrop-blur-sm animate-in fade-in duration-300">
       
-      {/* Outer Card - 48px roundness */}
-      <div className="relative w-full max-w-lg bg-paper rounded-cards shadow-[0_20px_60px_rgba(18,18,23,0.25)] border border-ash/40 overflow-hidden flex flex-col max-h-[90vh]">
+      {/* Outer Card - Responsive rounding */}
+      <div className="relative w-full max-w-lg bg-paper rounded-[24px] sm:rounded-cards shadow-[0_20px_60px_rgba(18,18,23,0.25)] border border-ash/40 overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh]">
         
         {/* Close button */}
         <button
           onClick={closeCheckout}
-          className="absolute top-24 right-24 text-slate hover:text-obsidian p-8 rounded-full hover:bg-fog transition-colors z-10"
+          className="absolute top-[16px] right-[16px] sm:top-[24px] sm:right-[24px] text-slate hover:text-obsidian p-[6px] sm:p-[8px] rounded-full hover:bg-fog transition-colors z-10"
         >
-          <svg className="w-20 h-20 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+          <svg className="w-[18px] sm:w-[20px] h-[18px] sm:h-[20px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        <div className="p-40 overflow-y-auto flex-1">
+        <div className="p-[20px] sm:p-[40px] overflow-y-auto flex-1">
           {step === 'form' ? (
             <div>
               {/* Header */}
-              <div className="mb-24">
+              <div className="mb-[16px] sm:mb-[24px]">
                 <span className="font-body text-caption font-semibold tracking-[2px] text-royal-violet uppercase block mb-4">
-                  {isFree ? 'FREE ACCESS' : 'SECURE SECURE CHECKOUT'}
+                  {isFree ? 'FREE ACCESS' : 'SECURE CHECKOUT'}
                 </span>
                 <h3 className="font-display text-subheading font-bold text-obsidian tracking-tight">
                   Acquire Resource
@@ -132,19 +132,19 @@ export default function CheckoutModal() {
               </div>
 
               {/* Product Info Specimen */}
-              <div className="flex items-center gap-16 p-16 bg-fog rounded-input border border-ash/40 mb-24">
-                <div className={`w-48 h-48 rounded-input bg-gradient-to-br ${checkoutItem.gradient} flex items-center justify-center text-paper font-bold text-[14px]`}>
+              <div className="flex items-center gap-[12px] sm:gap-[16px] p-[12px] sm:p-[16px] bg-fog rounded-input border border-ash/40 mb-[16px] sm:mb-[24px]">
+                <div className={`w-[48px] h-[48px] rounded-input bg-gradient-to-br ${checkoutItem.gradient} flex items-center justify-center text-paper font-bold text-[14px] shrink-0`}>
                   {checkoutItem.type.substring(0, 2)}
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-display text-[15px] font-bold text-obsidian leading-tight">
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-display text-[14px] sm:text-[15px] font-bold text-obsidian leading-tight truncate">
                     {checkoutItem.title}
                   </h4>
-                  <p className="font-body text-caption text-slate mt-2">
+                  <p className="font-body text-[12px] sm:text-caption text-slate mt-2 truncate">
                     by {checkoutItem.author} &bull; {checkoutItem.fileSize}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <span className="font-display text-caption font-bold text-obsidian">
                     {isFree ? 'FREE' : `$${checkoutItem.price.toFixed(2)}`}
                   </span>
@@ -152,15 +152,15 @@ export default function CheckoutModal() {
               </div>
 
               {errorMsg && (
-                <div className="bg-crimson/10 border border-crimson/30 rounded-input p-12 text-caption text-crimson mb-24 font-body">
+                <div className="bg-crimson/10 border border-crimson/30 rounded-input p-12 text-caption text-crimson mb-[16px] sm:mb-[24px] font-body">
                   {errorMsg}
                 </div>
               )}
 
               {/* Checkout Form */}
-              <form onSubmit={handleCheckoutSubmit} className="flex flex-col gap-16">
+              <form onSubmit={handleCheckoutSubmit} className="flex flex-col gap-[16px]">
                 <div>
-                  <label className="block font-body text-caption font-medium text-slate mb-6">
+                  <label className="block font-body text-[12px] sm:text-caption font-medium text-slate mb-6">
                     EMAIL ADDRESS
                   </label>
                   <input
@@ -169,17 +169,17 @@ export default function CheckoutModal() {
                     placeholder="designer@studio.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-paper text-obsidian font-body text-caption px-16 py-12 rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
+                    className="w-full bg-paper text-obsidian font-body text-caption px-[16px] py-[12px] rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
                   />
-                  <p className="font-body text-[11px] text-slate mt-4">
+                  <p className="font-body text-[10px] sm:text-[11px] text-slate mt-4">
                     Your license key and download link will be dispatched here.
                   </p>
                 </div>
 
                 {!isFree && (
-                  <div className="flex flex-col gap-16 border-t border-ash/50 pt-16 mt-8">
+                  <div className="flex flex-col gap-[16px] border-t border-ash/50 pt-[16px] mt-8">
                     <div>
-                      <label className="block font-body text-caption font-medium text-slate mb-6">
+                      <label className="block font-body text-[12px] sm:text-caption font-medium text-slate mb-6">
                         CARD NUMBER
                       </label>
                       <input
@@ -188,13 +188,13 @@ export default function CheckoutModal() {
                         placeholder="4111 2222 3333 4444"
                         value={cardNumber}
                         onChange={handleCardNumberChange}
-                        className="w-full bg-paper text-obsidian font-body text-caption px-16 py-12 rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
+                        className="w-full bg-paper text-obsidian font-body text-caption px-[16px] py-[12px] rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
                       />
                     </div>
 
-                    <div className="grid grid-cols-2 gap-16">
+                    <div className="grid grid-cols-2 gap-[12px] sm:gap-[16px]">
                       <div>
-                        <label className="block font-body text-caption font-medium text-slate mb-6">
+                        <label className="block font-body text-[12px] sm:text-caption font-medium text-slate mb-6">
                           EXPIRY DATE
                         </label>
                         <input
@@ -203,11 +203,11 @@ export default function CheckoutModal() {
                           placeholder="MM/YY"
                           value={cardExpiry}
                           onChange={handleExpiryChange}
-                          className="w-full bg-paper text-obsidian font-body text-caption px-16 py-12 rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
+                          className="w-full bg-paper text-obsidian font-body text-caption px-[16px] py-[12px] rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
                         />
                       </div>
                       <div>
-                        <label className="block font-body text-caption font-medium text-slate mb-6">
+                        <label className="block font-body text-[12px] sm:text-caption font-medium text-slate mb-6">
                           CVC / CVV
                         </label>
                         <input
@@ -216,18 +216,18 @@ export default function CheckoutModal() {
                           placeholder="321"
                           value={cardCvc}
                           onChange={handleCvcChange}
-                          className="w-full bg-paper text-obsidian font-body text-caption px-16 py-12 rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
+                          className="w-full bg-paper text-obsidian font-body text-caption px-[16px] py-[12px] rounded-input border border-ash focus:outline-none focus:border-royal-violet focus:ring-1 focus:ring-royal-violet/30 transition-all placeholder-slate"
                         />
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Submit button - 8px radius */}
+                {/* Submit button */}
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full bg-royal-violet text-paper font-body text-[15px] font-medium py-14 rounded-buttons mt-16 hover:bg-electric-iris active:scale-[0.99] disabled:opacity-60 transition-all flex items-center justify-center gap-8 shadow-[0_1px_2px_rgba(18,18,23,0.08)] cursor-pointer"
+                  className="w-full bg-royal-violet text-paper font-body text-[15px] font-medium py-[14px] rounded-buttons mt-[16px] hover:bg-electric-iris active:scale-[0.99] disabled:opacity-60 transition-all flex items-center justify-center gap-8 shadow-[0_1px_2px_rgba(18,18,23,0.08)] cursor-pointer text-center"
                 >
                   {isProcessing ? (
                     <>
@@ -256,11 +256,11 @@ export default function CheckoutModal() {
             </div>
           ) : (
             /* Success State */
-            <div className="text-center py-16 animate-in zoom-in-95 duration-300">
+            <div className="text-center py-[16px] animate-in zoom-in-95 duration-300">
               
               {/* Success Checkmark Circle */}
-              <div className="w-64 h-64 bg-emerald/10 text-emerald rounded-full flex items-center justify-center mx-auto mb-24">
-                <svg className="w-32 h-32 fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <div className="w-[64px] h-[64px] bg-emerald/10 text-emerald rounded-full flex items-center justify-center mx-auto mb-[24px]">
+                <svg className="w-[32px] h-[32px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -276,7 +276,7 @@ export default function CheckoutModal() {
               </p>
 
               {/* Download card */}
-              <div className="bg-fog rounded-input p-20 border border-ash/40 text-left mb-32 flex flex-col gap-12 font-body text-caption">
+              <div className="bg-fog rounded-input p-[20px] border border-ash/40 text-left mb-32 flex flex-col gap-12 font-body text-caption">
                 <div className="flex justify-between border-b border-ash/40 pb-8 text-[11px] text-slate">
                   <span>ITEM</span>
                   <span>SIZE</span>
@@ -310,10 +310,10 @@ export default function CheckoutModal() {
                   `punkrecords Assets: ${checkoutItem.title}\nLicense: ${isFree ? 'Free Commercial' : 'Single Developer Premium'}\nKey: ${licenseKey || 'N/A'}\nMock download success!`
                 )}`}
                 download={`${checkoutItem.title.toLowerCase().replace(/\s+/g, '-')}-punkrecords.txt`}
-                className="w-full bg-obsidian text-paper hover:bg-obsidian/90 font-body text-[15px] font-medium py-14 rounded-buttons flex items-center justify-center gap-8 shadow-[0_1.5px_3px_rgba(18,18,23,0.12)] hover:-translate-y-1 active:translate-y-0 transition-all cursor-pointer"
+                className="w-full bg-obsidian text-paper hover:bg-obsidian/90 font-body text-[15px] font-medium py-[14px] rounded-buttons flex items-center justify-center gap-8 shadow-[0_1.5px_3px_rgba(18,18,23,0.12)] hover:-translate-y-1 active:translate-y-0 transition-all cursor-pointer text-center"
               >
                 <span>Download Assets</span>
-                <svg className="w-18 h-18 fill-none stroke-current stroke-2 animate-bounce" viewBox="0 0 24 24">
+                <svg className="w-[18px] h-[18px] fill-none stroke-current stroke-2 animate-bounce" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
               </a>

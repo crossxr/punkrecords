@@ -68,3 +68,51 @@ body {
 .font-body {
   font-family: var(--font-inter);
 }
+
+/* Typography Scale utilities mapping sizes, line-heights, and tracking */
+@utility text-caption {
+  font-size: 14px;
+  line-height: 1.29;
+  letter-spacing: 2px;
+}
+
+@utility text-body {
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+@utility text-body-lg {
+  font-size: 18px;
+  line-height: 1.6;
+  letter-spacing: -0.18px;
+}
+
+@utility text-subheading {
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -0.78px;
+}
+
+@utility text-heading-sm {
+  font-size: 38px;
+  line-height: 1.2;
+  letter-spacing: -1.52px;
+}
+
+@utility text-heading {
+  font-size: 48px;
+  line-height: 1.14;
+  letter-spacing: -1.92px;
+}
+
+@utility text-heading-lg {
+  font-size: 56px;
+  line-height: 1.13;
+  letter-spacing: -2.24px;
+}
+
+@utility text-display {
+  font-size: 80px;
+  line-height: 1;
+  letter-spacing: -3.2px;
+}

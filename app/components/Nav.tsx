@@ -1,76 +1,197 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export default function Nav() {
   const pathname = usePathname()
+  const isHome = pathname === '/'
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-paper border-b border-ash h-64 flex items-center justify-between px-24 md:px-48 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-      <div className="flex items-center gap-32">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-8 group">
-          <div className="w-24 h-24 bg-lemon-zest rounded-full flex items-center justify-center relative overflow-hidden group-hover:rotate-12 transition-transform duration-300">
-            {/* Minimalist Lemon SVG Leaf */}
-            <svg
-              className="absolute -top-1 -right-1 w-12 h-12 text-emerald fill-current"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-            </svg>
-            <div className="w-8 h-8 bg-paper rounded-full absolute top-6 left-6" />
-          </div>
-          <span className="font-display text-subheading font-bold text-obsidian tracking-tight flex items-start">
-            punkrecords<span className="text-royal-violet font-light">*</span>
-          </span>
-        </Link>
+    <header
+      className={`sticky top-0 z-40 w-full h-[64px] flex items-center justify-between px-[24px] md:px-[80px] transition-all duration-300 ${
+        isHome
+          ? 'bg-royal-violet border-b border-paper/10 text-paper'
+          : 'bg-paper border-b border-ash text-obsidian shadow-[0_1px_3px_rgba(0,0,0,0.02)]'
+      }`}
+    >
+      <div className="flex items-center gap-[32px] w-full max-w-[1400px] mx-auto justify-between relative">
+        
+        <div className="flex items-center gap-[32px]">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-[12px] group shrink-0">
+            {/* Logo Icon */}
+            <div className="w-[32px] h-[32px] bg-lemon-zest rounded-full flex items-center justify-center relative overflow-hidden group-hover:rotate-12 transition-transform duration-300 shrink-0">
+              <svg
+                className="absolute -top-[1px] -right-[1px] w-[16px] h-[16px] text-emerald fill-current"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
+              </svg>
+              <div className="w-[10px] h-[10px] bg-paper rounded-full absolute top-[8px] left-[8px]" />
+            </div>
+            
+            {/* Wordmark and Subtext container */}
+            <div className="flex flex-col items-start leading-none gap-[2px]">
+              <span className={`font-display text-[20px] md:text-[22px] font-bold tracking-tight flex items-start leading-none ${
+                isHome ? 'text-paper' : 'text-obsidian'
+              }`}>
+                punkrecords<span className="text-lemon-zest font-light">*</span>
+              </span>
+              <span className={`font-body text-[8px] font-medium tracking-[0.5px] uppercase opacity-75 whitespace-nowrap ${
+                isHome ? 'text-paper/85' : 'text-slate'
+              }`}>
+                a superxepic company
+              </span>
+            </div>
+          </Link>
 
-        {/* Center Links */}
-        <nav className="hidden md:flex items-center gap-8">
+          {/* Center Links (Desktop) */}
+          <nav className="hidden md:flex items-center gap-[8px]">
+            <Link
+              href="/"
+              className={`font-body text-[15px] font-medium px-[16px] py-[8px] rounded-navpills transition-all duration-200 ${
+                isHome
+                  ? pathname === '/'
+                    ? 'bg-paper/15 text-paper'
+                    : 'text-paper/80 hover:bg-paper/10 hover:text-paper'
+                  : pathname === '/'
+                  ? 'bg-royal-violet text-paper'
+                  : 'text-slate hover:bg-fog hover:text-obsidian'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              href="/shop"
+              className={`font-body text-[15px] font-medium px-[16px] py-[8px] rounded-navpills transition-all duration-200 ${
+                isHome
+                  ? pathname === '/shop'
+                    ? 'bg-paper/15 text-paper'
+                    : 'text-paper/80 hover:bg-paper/10 hover:text-paper'
+                  : pathname === '/shop'
+                  ? 'bg-royal-violet text-paper'
+                  : 'text-slate hover:bg-fog hover:text-obsidian'
+              }`}
+            >
+              Shop Resources
+            </Link>
+          </nav>
+        </div>
+
+        {/* Right Side Buttons (Desktop) */}
+        <div className="hidden md:flex items-center gap-[16px]">
           <Link
-            href="/"
-            className={`font-body text-[15px] font-medium px-16 py-8 rounded-navpills transition-all duration-200 ${
-              pathname === '/'
-                ? 'bg-royal-violet text-paper'
-                : 'text-slate hover:bg-fog hover:text-obsidian'
+            href="/shop"
+            className={`font-body text-[15px] font-medium px-[8px] py-[4px] transition-colors ${
+              isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
             }`}
           >
-            Home
+            Sign in
           </Link>
           <Link
             href="/shop"
-            className={`font-body text-[15px] font-medium px-16 py-8 rounded-navpills transition-all duration-200 ${
-              pathname === '/shop'
-                ? 'bg-royal-violet text-paper'
-                : 'text-slate hover:bg-fog hover:text-obsidian'
+            className={`font-body text-[15px] font-medium px-[20px] py-[12px] rounded-navpills hover:-translate-y-[1px] active:translate-y-0 transition-all flex items-center gap-[8px] ${
+              isHome
+                ? 'bg-paper text-obsidian hover:bg-fog shadow-[0_4px_12px_rgba(0,0,0,0.1)]'
+                : 'bg-obsidian text-paper hover:opacity-90 shadow-[0_1px_2px_rgba(18,18,23,0.08)]'
             }`}
           >
-            Shop Resources
+            <span>Get started</span>
+            <svg
+              className="w-[16px] h-[16px] fill-none stroke-current stroke-2"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
           </Link>
-        </nav>
-      </div>
+        </div>
 
-      {/* Right Side Buttons */}
-      <div className="flex items-center gap-16">
-        <Link
-          href="/shop"
-          className="hidden sm:inline-block font-body text-[15px] font-medium text-slate hover:text-obsidian px-8 py-4 transition-colors"
+        {/* Mobile Menu Button (Hamburger) */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-[8px] rounded hover:bg-black/5 active:scale-95 transition-all text-current"
+          aria-label="Toggle menu"
         >
-          Sign in
-        </Link>
-        <Link
-          href="/shop"
-          className="bg-obsidian text-paper font-body text-[15px] font-medium px-20 py-12 rounded-buttons hover:opacity-90 hover:-translate-y-1 active:translate-y-0 active:opacity-100 transition-all shadow-[0_1px_2px_rgba(18,18,23,0.08)] flex items-center gap-8"
-        >
-          Browse Shop
-          <svg
-            className="w-16 h-16 fill-none stroke-current stroke-2"
-            viewBox="0 0 24 24"
+          {isMobileMenuOpen ? (
+            <svg className="w-[24px] h-[24px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg className="w-[24px] h-[24px] fill-none stroke-current stroke-2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          )}
+        </button>
+
+        {/* Mobile Menu Dropdown Drawer */}
+        {isMobileMenuOpen && (
+          <div
+            className={`absolute top-[52px] right-0 w-[240px] rounded-cards p-[24px] shadow-[0_20px_40px_rgba(18,18,23,0.15)] flex flex-col gap-[16px] border md:hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
+              isHome
+                ? 'bg-royal-violet border-paper/20 text-paper'
+                : 'bg-paper border-ash text-obsidian'
+            }`}
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Link>
+            <Link
+              href="/"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
+                pathname === '/'
+                  ? isHome
+                    ? 'bg-paper/15 text-paper'
+                    : 'bg-royal-violet text-paper'
+                  : 'hover:bg-fog hover:text-obsidian'
+              }`}
+            >
+              Home
+            </Link>
+            <Link
+              href="/shop"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
+                pathname === '/shop'
+                  ? isHome
+                    ? 'bg-paper/15 text-paper'
+                    : 'bg-royal-violet text-paper'
+                  : 'text-slate hover:bg-fog hover:text-obsidian'
+              }`}
+            >
+              Shop Resources
+            </Link>
+            <div className="border-t border-current/15 pt-[12px] flex flex-col gap-[12px]">
+              <Link
+                href="/shop"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-body text-[15px] font-medium py-[8px] px-[12px] transition-colors ${
+                  isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
+                }`}
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/shop"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`font-body text-[15px] font-semibold text-center py-[12px] px-[16px] rounded-buttons flex items-center justify-center gap-[8px] ${
+                  isHome
+                    ? 'bg-paper text-obsidian hover:bg-fog'
+                    : 'bg-obsidian text-paper hover:opacity-90'
+                }`}
+              >
+                <span>Get started</span>
+                <svg
+                  className="w-[14px] h-[14px] fill-none stroke-current stroke-2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        )}
+
       </div>
     </header>
   )

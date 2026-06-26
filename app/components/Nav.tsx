@@ -148,95 +148,102 @@ export default function Nav() {
           )}
         </button>
 
-        {/* Mobile Menu Dropdown Drawer */}
-        {isMobileMenuOpen && (
-          <div
-            className={`absolute top-[52px] right-0 w-[240px] rounded-cards p-[24px] shadow-[0_20px_40px_rgba(18,18,23,0.15)] flex flex-col gap-[16px] border md:hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
+      </div>
+
+      {/* Mobile Menu Dropdown Drawer (Full width, flat, no curves) */}
+      {isMobileMenuOpen && (
+        <div
+          className={`absolute top-[64px] left-0 w-full shadow-[0_16px_32px_rgba(18,18,23,0.08)] flex flex-col gap-[20px] p-[24px] border-b border-t border-x-0 md:hidden animate-in fade-in slide-in-from-top-2 duration-200 z-50 ${
+            isHome
+              ? 'bg-royal-violet border-paper/10 text-paper'
+              : 'bg-paper border-ash/40 text-obsidian'
+          }`}
+        >
+          <Link
+            href="/"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`font-body text-[16px] font-semibold py-[10px] px-[12px] rounded-none border-l-2 transition-all ${
               isHome
-                ? 'bg-royal-violet border-paper/20 text-paper'
-                : 'bg-paper border-ash text-obsidian'
+                ? 'bg-paper/10 border-paper text-paper'
+                : 'border-royal-violet text-royal-violet bg-royal-violet/5'
             }`}
           >
-            <Link
-              href="/"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
-                isHome
-                  ? 'bg-paper/15 text-paper'
-                  : 'hover:bg-fog hover:text-obsidian'
-              }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/shop"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`font-body text-[16px] font-medium py-[8px] px-[12px] rounded-input transition-colors ${
-                pathname.startsWith('/shop')
-                  ? 'bg-royal-violet text-paper'
-                  : 'text-slate hover:bg-fog hover:text-obsidian'
-              }`}
-            >
-              Shop Resources
-            </Link>
-            <div className="border-t border-current/15 pt-[12px] flex flex-col gap-[12px]">
-              {user ? (
-                <>
-                  <span className="font-body text-[12px] px-[12px] opacity-75">
+            Home
+          </Link>
+          <Link
+            href="/shop"
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`font-body text-[16px] font-semibold py-[10px] px-[12px] rounded-none border-l-2 transition-all ${
+              pathname.startsWith('/shop')
+                ? 'bg-paper/10 border-paper text-paper'
+                : 'border-transparent text-slate hover:text-obsidian hover:bg-fog'
+            }`}
+          >
+            Shop Resources
+          </Link>
+          <div className="border-t border-current/10 pt-[16px] flex flex-col gap-[16px]">
+            {user ? (
+              <>
+                <div className="flex flex-col gap-[4px] px-[12px]">
+                  <span className="font-body text-[11px] uppercase tracking-wider opacity-60">Logged in</span>
+                  <span className="font-body text-[14px] font-bold truncate">
                     {user.email}
                   </span>
-                  <Link
-                    href="/account"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="font-body text-[15px] font-medium py-[8px] px-[12px] rounded-input hover:bg-fog hover:text-obsidian transition-colors"
+                </div>
+                <Link
+                  href="/account"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-body text-[15px] font-medium py-[10px] px-[12px] rounded-none transition-colors ${
+                    isHome ? 'hover:bg-paper/10' : 'hover:bg-fog hover:text-obsidian'
+                  }`}
+                >
+                  My Library
+                </Link>
+                <button
+                  onClick={() => {
+                    signOut()
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className={`font-body text-[15px] font-medium py-[10px] px-[12px] text-left rounded-none transition-colors cursor-pointer w-full ${
+                    isHome ? 'hover:bg-paper/10' : 'hover:bg-fog hover:text-obsidian'
+                  }`}
+                >
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-body text-[15px] font-medium py-[10px] px-[12px] transition-colors rounded-none ${
+                    isHome ? 'text-paper/85 hover:text-paper' : 'text-slate hover:text-obsidian hover:bg-fog'
+                  }`}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`font-body text-[15px] font-bold text-center py-[14px] px-[20px] rounded-none flex items-center justify-center gap-[8px] transition-all ${
+                    isHome
+                      ? 'bg-paper text-obsidian hover:bg-paper/95'
+                      : 'bg-obsidian text-paper hover:bg-obsidian/90'
+                  }`}
+                >
+                  <span>Get started</span>
+                  <svg
+                    className="w-[14px] h-[14px] fill-none stroke-current stroke-2"
+                    viewBox="0 0 24 24"
                   >
-                    My Library
-                  </Link>
-                  <button
-                    onClick={() => {
-                      signOut()
-                      setIsMobileMenuOpen(false)
-                    }}
-                    className="font-body text-[15px] font-medium py-[8px] px-[12px] text-left rounded-input hover:bg-fog hover:text-obsidian transition-colors cursor-pointer w-full"
-                  >
-                    Sign out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`font-body text-[15px] font-medium py-[8px] px-[12px] transition-colors ${
-                      isHome ? 'text-paper/80 hover:text-paper' : 'text-slate hover:text-obsidian'
-                    }`}
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    href="/auth"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`font-body text-[15px] font-semibold text-center py-[12px] px-[16px] rounded-buttons flex items-center justify-center gap-[8px] ${
-                      isHome
-                        ? 'bg-paper text-obsidian hover:bg-fog'
-                        : 'bg-obsidian text-paper hover:opacity-90'
-                    }`}
-                  >
-                    <span>Get started</span>
-                    <svg
-                      className="w-[14px] h-[14px] fill-none stroke-current stroke-2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </Link>
-                </>
-              )}
-            </div>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </Link>
+              </>
+            )}
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
     </header>
   )
 }

@@ -109,10 +109,10 @@ export default function Shop() {
             </div>
 
             {/* Price Filter Toggle (Free vs Paid) */}
-            <div className="flex items-center gap-[8px] bg-fog p-[4px] rounded-input border border-ash/40 self-start md:self-auto shrink-0 font-body text-caption font-medium">
+            <div className="grid grid-cols-3 md:flex items-center gap-[4px] md:gap-[8px] bg-fog p-[4px] rounded-input border border-ash/40 w-full md:w-auto shrink-0 font-body text-[12px] sm:text-caption font-medium">
               <button
                 onClick={() => setSelectedPriceType('all')}
-                className={`px-[16px] py-[8px] rounded-input transition-colors cursor-pointer ${
+                className={`px-[8px] sm:px-[16px] py-[8px] rounded-input text-center transition-colors cursor-pointer truncate ${
                   selectedPriceType === 'all'
                     ? 'bg-paper text-obsidian shadow-[0_1px_2px_rgba(0,0,0,0.05)]'
                     : 'text-slate hover:text-obsidian'
@@ -122,7 +122,7 @@ export default function Shop() {
               </button>
               <button
                 onClick={() => setSelectedPriceType('free')}
-                className={`px-[16px] py-[8px] rounded-input transition-colors cursor-pointer ${
+                className={`px-[8px] sm:px-[16px] py-[8px] rounded-input text-center transition-colors cursor-pointer truncate ${
                   selectedPriceType === 'free'
                     ? 'bg-paper text-obsidian shadow-[0_1px_2px_rgba(0,0,0,0.05)]'
                     : 'text-slate hover:text-obsidian'
@@ -132,7 +132,7 @@ export default function Shop() {
               </button>
               <button
                 onClick={() => setSelectedPriceType('paid')}
-                className={`px-[16px] py-[8px] rounded-input transition-colors cursor-pointer ${
+                className={`px-[8px] sm:px-[16px] py-[8px] rounded-input text-center transition-colors cursor-pointer truncate ${
                   selectedPriceType === 'paid'
                     ? 'bg-paper text-obsidian shadow-[0_1px_2px_rgba(0,0,0,0.05)]'
                     : 'text-slate hover:text-obsidian'
@@ -337,8 +337,8 @@ export default function Shop() {
 
                   </div>
 
-                  {/* Card Description and details - 40px padding */}
-                  <div className="p-[40px] flex flex-col justify-between flex-1 gap-[24px]">
+                  {/* Card Description and details - 24px padding on mobile, 40px on desktop */}
+                  <div className="p-[24px] sm:p-[40px] flex flex-col justify-between flex-1 gap-[24px]">
                     
                     <div className="flex flex-col gap-[12px] text-left">
                       <span className="font-body text-caption font-semibold tracking-[2px] text-slate uppercase">
@@ -352,8 +352,8 @@ export default function Shop() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-ash/40 pt-[20px] mt-[8px]">
-                      <div className="flex flex-col items-start">
+                    <div className="flex items-center justify-between border-t border-ash/40 pt-[20px] mt-[8px] gap-[8px]">
+                      <div className="flex flex-col items-start shrink-0">
                         <span className="font-body text-[10px] text-slate font-medium uppercase tracking-wider">PRICE</span>
                         <span className="font-display text-subheading font-bold text-obsidian">
                           {item.price === 0 ? 'FREE' : `₹${item.price}`}
@@ -363,7 +363,7 @@ export default function Shop() {
                       {/* Buy / Download Button - 8px radius */}
                       <Link
                         href={`/shop/${item.id}`}
-                        className={`font-body text-caption font-semibold px-[20px] py-[12px] rounded-buttons flex items-center gap-[8px] transition-all cursor-pointer shadow-[0_1px_2px_rgba(18,18,23,0.08)] ${
+                        className={`font-body text-[13px] sm:text-caption font-semibold px-[14px] py-[10px] sm:px-[20px] sm:py-[12px] rounded-buttons flex items-center gap-[6px] sm:gap-[8px] transition-all cursor-pointer shadow-[0_1px_2px_rgba(18,18,23,0.08)] ${
                           isOwned
                             ? 'bg-emerald text-paper hover:bg-emerald/90'
                             : 'bg-obsidian text-paper hover:bg-obsidian/90 active:scale-95'

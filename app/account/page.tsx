@@ -119,10 +119,8 @@ export default function AccountPage() {
 
                     {/* Download Button */}
                     <a
-                      href={`data:text/plain;charset=utf-8,${encodeURIComponent(
-                        `punkrecords Specimen Download: ${lic.resource_title}\nLicense: Single Developer Premium\nKey: ${lic.license_key}\nTX: ${lic.tx_hash}\nTimestamp: ${lic.purchased_at}\nDatabase verification success!`
-                      )}`}
-                      download={`${lic.resource_title.toLowerCase().replace(/\s+/g, '-')}-license.txt`}
+                      href={`/api/download/${lic.resource_id}`}
+                      download=""
                       className="w-full bg-obsidian text-paper hover:bg-obsidian/90 font-body text-caption font-semibold py-[12px] rounded-buttons flex items-center justify-center gap-[8px] transition-all cursor-pointer text-center mt-[8px]"
                     >
                       <span>Download Assets</span>

@@ -88,7 +88,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
     const randKey = 'PR-' + Array.from({ length: 3 }, () =>
       Math.random().toString(36).substring(2, 7).toUpperCase()
     ).join('-')
-    
+
     const randHash = '0x' + Array.from({ length: 40 }, () =>
       Math.floor(Math.random() * 16).toString(16)
     ).join('')
@@ -122,7 +122,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
       } else {
         // Paid Premium item - Create Razorpay order on server
         const rzpResult = await createRazorpayOrderAction(
-          product.price, 
+          product.price,
           'rcpt_' + Math.random().toString(36).substring(2, 10)
         )
 
@@ -138,7 +138,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
         // If mock mode fallback is enabled (for safety if keys are placeholders or testing environment)
         if (rzpResult.isMock || !(window as any).Razorpay) {
           console.warn('Razorpay running in Mock Simulator fallback mode.')
-          
+
           setTimeout(async () => {
             if (user?.email) {
               const dbResult = await saveLicenseAction(
@@ -154,7 +154,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                 return
               }
             }
-            
+
             setIsProcessing(false)
             markAsOwned(product.id)
             setLicenseKey(randKey)
@@ -248,10 +248,10 @@ export default function ProductCheckoutPage({ params }: PageProps) {
 
               {product.image ? (
                 <div className="absolute inset-0 z-0">
-                  <img 
-                    src={product.image} 
-                    alt={product.title} 
-                    className="w-full h-full object-cover" 
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-obsidian/40 via-transparent to-obsidian/10" />
                 </div>
@@ -387,18 +387,18 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                     TRANSACTION COMPLETE
                   </span>
                   <h3 className="font-display text-[28px] font-bold text-obsidian tracking-tight">
-                    Ready to Deploy
+                    Ready to Download
                   </h3>
                 </div>
 
                 <p className="font-body text-caption text-slate leading-relaxed">
                   {user ? (
                     <>
-                      The specimen files are compiled. We have registered this purchase to your database dashboard and sent receipt logs to <strong className="text-obsidian">{user.email}</strong>.
+                      The specimen files are compiled. We have registered this purchase to your database dashboard and sent receipt logs to <strong className="text-obsidian">{user.email}</strong>. Please record your license key and keep it safe for future retrieval.
                     </>
                   ) : (
                     <>
-                      The specimen files are compiled. Your mock licensing key and download link are ready.
+                      The specimen files are compiled. Your licensing key and download link are ready. Please keep your license key in a safe place for future downloads.
                     </>
                   )}
                 </p>
@@ -428,6 +428,9 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                       </code>
                     </div>
                   )}
+                  <div className="text-[11px] text-amber bg-amber/5 border border-amber/20 p-[10px] rounded-[6px] mt-[4px] leading-relaxed font-medium">
+                    ⚠️ <strong>Important:</strong> Keep your license key safe. You will need it to verify ownership and access this download in the future.
+                  </div>
                 </div>
 
                 {user && (
@@ -438,10 +441,8 @@ export default function ProductCheckoutPage({ params }: PageProps) {
 
                 {/* Download Button */}
                 <a
-                  href={`data:text/plain;charset=utf-8,${encodeURIComponent(
-                    `punkrecords Specimen Download: ${product.title}\nLicense: ${isFree ? 'Free Commercial Standard' : 'Single Developer Premium'}\nKey: ${licenseKey || 'N/A'}\nFile size: ${product.fileSize}\nTimestamp: ${new Date().toISOString()}\nDatabase sync: ${user ? 'Authenticated (Active)' : 'Guest (Inactive)'}\nMock download success!`
-                  )}`}
-                  download={`${product.title.toLowerCase().replace(/\s+/g, '-')}-punkrecords.txt`}
+                  href={`/api/download/${product.id}`}
+                  download=""
                   className="w-full bg-obsidian text-paper hover:bg-obsidian/90 hover:scale-[1.01] active:scale-[0.99] font-body text-[16px] font-semibold py-[16px] rounded-buttons flex items-center justify-center gap-[8px] shadow-[0_4px_12px_rgba(18,18,23,0.15)] transition-all cursor-pointer text-center"
                 >
                   <span>Download Assets</span>
@@ -498,7 +499,7 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                   <div className="bg-royal-violet/5 border-l-4 border-royal-violet rounded-r-input p-[16px] flex flex-col gap-[8px] font-body text-[13px] relative overflow-hidden shadow-sm">
                     {/* Background decorative blur */}
                     <div className="absolute -right-16 -top-16 w-32 h-32 bg-lemon-zest/10 rounded-full blur-[40px] pointer-events-none" />
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="font-bold uppercase tracking-wider text-[10px] text-royal-violet">
                         Logged In Account
@@ -507,14 +508,14 @@ export default function ProductCheckoutPage({ params }: PageProps) {
                         Active Session
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-[8px] mt-[4px]">
                       <svg className="w-[16px] h-[16px] text-royal-violet stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
                       </svg>
                       <strong className="text-obsidian font-semibold break-all">{user.email}</strong>
                     </div>
-                    
+
                     <p className="text-slate text-[11px] leading-normal mt-[2px]">
                       This purchase and license key will be saved to your library dashboard automatically.
                     </p>

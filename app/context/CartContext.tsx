@@ -14,6 +14,7 @@ export interface Resource {
   gradient: string // CSS class or gradient style
   author: string
   image?: string
+  downloadUrl: string
 }
 
 interface CartContextType {

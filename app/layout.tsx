@@ -20,6 +20,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "punkrecords* — Premium Design Resources for Creators",
   description: "Access curated free and paid design resources, fonts, UI kits, icon packs, and template mockups. Designed for industrial precision and creative speed.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({
